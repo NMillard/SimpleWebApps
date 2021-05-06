@@ -1,14 +1,24 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApi.Repositories;
 
 namespace WebApi.BackgroundServices {
     public class FileManipulatorService : BackgroundService {
+        private readonly IServiceProvider provider;
+
         private readonly string folder = Path.Join(Directory.GetCurrentDirectory(), "staging");
         private readonly string processed = Path.Join(Directory.GetCurrentDirectory(), "uploads");
 
+        public FileManipulatorService(IServiceProvider provider) {
+            this.provider = provider;
+        }
+        
         protected async override Task ExecuteAsync(CancellationToken stoppingToken) {
             
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -19,10 +29,10 @@ namespace WebApi.BackgroundServices {
                 IncludeSubdirectories = true,
             };
 
-            watcher.Created += async (sender, args) => await ProcessImageAsync(args.FullPath, args.Name, stoppingToken);
+            watcher.Created += async (sender, args) => await ProcessProfileImageAsync(args.FullPath, stoppingToken);
         }
 
-        private async Task ProcessImageAsync(string path, string imageName, CancellationToken stoppingToken) {
+        private async Task ProcessProfileImageAsync(string path, CancellationToken stoppingToken) {
             bool isReady = false;
             while (!isReady && !stoppingToken.IsCancellationRequested) {
                 try {
@@ -41,15 +51,28 @@ namespace WebApi.BackgroundServices {
                         }
                     }
 
-                    string processedPath = Path.Join(processed, Path.GetDirectoryName(imageName));
-                    if (!Directory.Exists(processedPath)) Directory.CreateDirectory(processedPath);
+                    int userId = int.Parse(path.Split("-")[0].Split(Path.DirectorySeparatorChar)[^1]);
                     
-                    string fileName = Path.Join(processedPath, $"processed-{Path.GetFileName(path)}");
-                    bitmap.Save(fileName);
+                    await using var imageStream = new MemoryStream();
+                    bitmap.Save(imageStream, ImageFormat.Jpeg);
+                    
+                    UpdateUserProfileImage(userId, imageStream.ToArray());
                 } catch (IOException) {
                     isReady = false;
                 }
             }
+        }
+
+        private void UpdateUserProfileImage(int userId, byte[] imageBlob) {
+            using var scope = provider.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<UserRepository>();
+            
+            var user = repository.Get(userId);
+            if (user is null) return;
+            
+            user.ProfileImage = imageBlob;
+            
+            repository.Update(user);
         }
     }
 }

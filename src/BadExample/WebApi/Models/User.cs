@@ -20,6 +20,8 @@ namespace WebApi.Models {
         [MaxLength(50)]
         public string Username { get; set; }
 
+        public byte[] ProfileImage { get; set; }
+
         public List<Article> Articles { get; set; }
     }
 }

@@ -32,6 +32,11 @@ namespace WebApi.Repositories {
         public virtual List<T> All() {
             return Set.ToList();
         }
+
+        public virtual void Update(T entity) {
+            Set.Update(entity);
+            SaveChanges();
+        }
         
         public abstract void Create(T entity);
         public abstract void Delete(int id);

@@ -24,9 +24,9 @@ namespace WebApi.Controllers {
             this.configuration = configuration;
         }
 
-        [HttpPost("")]
-        public IActionResult Create([FromBody] User user) {
-            userRepository.Create(user);
+        [HttpPost]
+        public IActionResult Create(User model) {
+            userRepository.Create(model);
             return Ok();
         }
 
@@ -40,11 +40,14 @@ namespace WebApi.Controllers {
 
         [HttpPost("{userId:int}/upload/profileimage")]
         public async Task<IActionResult> UploadProfileImage(int userId, IFormFile picture) {
-            string savePath = Path.Combine(Directory.GetCurrentDirectory(), "staging", userId.ToString());
+            bool imageIsTooLarge = picture.Length / 1024 > 1024;
+            if (imageIsTooLarge) return BadRequest(new { Message = "Image cannot exceed 1MB" });
+            
+            string savePath = Path.Combine(Directory.GetCurrentDirectory(), "staging");
             if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
 
             string fileExtension = picture.FileName.Split(".")[^1];
-            string fileName = $"{Guid.NewGuid():N}.{fileExtension}";
+            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}.{fileExtension}";
 
             var img = new FileInfo(Path.Combine(savePath, fileName));
             FileStream stream = img.OpenWrite();
@@ -55,8 +58,14 @@ namespace WebApi.Controllers {
             return Ok();
         }
 
+        [HttpGet("{userId:int}/view/profileimage")]
+        public IActionResult ViewProfileImage(int userId) {
+            User user = userRepository.Get(userId);
+            return File(user.ProfileImage, "image/jpeg");
+        }
+
         // Just some stupid login function that has absolutely no real security.
-        [HttpGet("{userId:int}")]
+        [HttpGet("login/{userId:int}")]
         public IActionResult Login(int userId) {
             string privateKey = configuration["Auth:PrivateKey"];
 
