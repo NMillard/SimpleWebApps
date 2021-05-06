@@ -37,7 +37,7 @@ namespace WebApi.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Create(CreateArticleDto model) {
+        public IActionResult Create([FromBody] CreateArticleDto model) {
             if (!ModelState.IsValid) {
                 return BadRequest();
             }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebApi.BackgroundServices;
 using WebApi.OutputFormatters;
 using WebApi.Repositories;
 
@@ -41,7 +42,7 @@ namespace WebApi {
                         ValidateAudience = false,
                     };
                 });
-
+            
             // Run migrations on startup
             var db = services.BuildServiceProvider().GetRequiredService<AppDbContext>();
             db.Database.Migrate();

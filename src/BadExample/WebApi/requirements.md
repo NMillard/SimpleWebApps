@@ -6,6 +6,10 @@ This app will use some common "bad" practices, such as:
 - Entities inheriting from common base class
 - Entities with too many concerns
 
+## Requirements
+Experience with C#
+Some experience with aspnet or aspnetcore
+
 ### Models
 [] Entity base
 [] Simple user
