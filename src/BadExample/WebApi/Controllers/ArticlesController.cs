@@ -8,7 +8,7 @@ using WebApi.Repositories;
 
 namespace WebApi.Controllers {
 
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class ArticlesController : ControllerBase {
         private readonly ArticleRepository articleRepository;
 
@@ -22,14 +22,14 @@ namespace WebApi.Controllers {
             return Ok(article);
         }
 
-        [HttpGet("")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Produces(MediaTypeNames.Application.Json, "application/csv")]
         public IActionResult All() {
             return Ok(articleRepository.All());
         }
 
-        [HttpPost("")]
+        [HttpPost]
         public IActionResult Create(CreateArticleDto model) {
             if (!ModelState.IsValid) {
                 return BadRequest();
@@ -42,6 +42,12 @@ namespace WebApi.Controllers {
             };
             
             articleRepository.Create(article);
+            return Ok();
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id) {
+            articleRepository.Delete(id);
             return Ok();
         }
     }

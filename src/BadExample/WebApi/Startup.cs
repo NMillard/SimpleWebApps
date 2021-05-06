@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using WebApi.OutputFormatters;
 using WebApi.Repositories;
 
@@ -23,6 +24,7 @@ namespace WebApi {
                 options.RespectBrowserAcceptHeader = true; // allows us to use OutputFormatters
                 options.OutputFormatters.Add(new CsvOutputFormatter());
             });
+            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" }));
             services.AddDbContext<AppDbContext>();
             services.AddScoped<UserRepository>();
             services.AddScoped<ArticleRepository>();
@@ -40,14 +42,16 @@ namespace WebApi {
                     };
                 });
 
-            // Run migrations on startup - obviously also a very bad practice
+            // Run migrations on startup
             var db = services.BuildServiceProvider().GetRequiredService<AppDbContext>();
             db.Database.Migrate();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) { // Not a good idea to have dev and prod behaving differently
+            if (env.IsDevelopment()) { // bad practice to have dev and prod environments behave differently
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger()
+                    .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
 
             app.UseHttpsRedirection();
