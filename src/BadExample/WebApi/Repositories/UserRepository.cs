@@ -15,8 +15,6 @@ namespace WebApi.Repositories {
             var user = base.Get(id);
             Entities.Attach(user).Collection(u => u.Articles).Load();
             
-            if (user is null) throw new EntityNotFoundException<User>(id);
-            
             return user;
         }
     }

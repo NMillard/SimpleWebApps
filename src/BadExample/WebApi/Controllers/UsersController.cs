@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Dtos;
+using WebApi.Exceptions;
 using WebApi.Models;
 using WebApi.Repositories;
 
@@ -68,6 +69,12 @@ namespace WebApi.Controllers {
         // Just some stupid login function that has absolutely no real security.
         [HttpGet("login/{userId:int}")]
         public IActionResult Login(int userId) {
+            try {
+                userRepository.Get(userId);
+            } catch (EntityNotFoundException<User> e) {
+                return NotFound(new { e.Message });
+            } 
+            
             string privateKey = configuration["Auth:PrivateKey"];
 
             var credentials = new SigningCredentials(
