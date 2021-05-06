@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Net.Mime;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Dtos;
 using WebApi.Models;
 using WebApi.Repositories;
 
 namespace WebApi.Controllers {
-    
+
     [Route("api/[controller]/[action]")]
     public class ArticlesController : ControllerBase {
         private readonly ArticleRepository articleRepository;
@@ -21,6 +23,8 @@ namespace WebApi.Controllers {
         }
 
         [HttpGet("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces(MediaTypeNames.Application.Json, "application/csv")]
         public IActionResult All() {
             return Ok(articleRepository.All());
         }

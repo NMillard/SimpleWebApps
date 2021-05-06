@@ -27,9 +27,10 @@ namespace WebApi.Controllers {
         }
 
         [Authorize]
-        [HttpGet("{id:int}")]
-        public IActionResult Get(int id) {
-            User user = userRepository.Get(id);
+        [HttpGet("")]
+        public IActionResult Get() {
+            string userId = HttpContext.User.FindFirstValue("userId");
+            User user = userRepository.Get(int.Parse(userId));
             return Ok(user);
         }
 

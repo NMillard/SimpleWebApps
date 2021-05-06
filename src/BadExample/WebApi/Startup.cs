@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebApi.OutputFormatters;
 using WebApi.Repositories;
 
 namespace WebApi {
@@ -19,7 +20,10 @@ namespace WebApi {
         private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers();
+            services.AddControllers().AddMvcOptions(options => {
+                options.RespectBrowserAcceptHeader = true; // allows us to use OutputFormatters
+                options.OutputFormatters.Add(new CsvOutputFormatter());
+            });
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
                 c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme {
