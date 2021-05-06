@@ -1,6 +1,17 @@
-﻿
+﻿GET https://localhost:5001/api/users/login/1
+Accept: application/json
+
+###
+
+GET https://localhost:5001/api/users/get
+Accept: application/json
+Authorization: Bearer insert_api_token
+
+###
 
 GET https://localhost:5001/api/articles/all
 Accept: application/csv
 
 ###
+
+
