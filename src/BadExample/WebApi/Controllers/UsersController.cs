@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.Dtos;
 using WebApi.Models;
 using WebApi.Repositories;
 
@@ -25,13 +26,13 @@ namespace WebApi.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Create(User model) {
-            userRepository.Create(model);
-            return Ok();
+        public IActionResult Create([FromBody] CreateUserDto model) {
+            int id = userRepository.Create(new User {Username = model.Username});
+            return Ok(new { Id = id });
         }
 
         [Authorize]
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult Get() {
             string userId = HttpContext.User.FindFirstValue("userId");
             User user = userRepository.Get(int.Parse(userId));

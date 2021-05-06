@@ -13,7 +13,6 @@ namespace WebApi.BackgroundServices {
         private readonly IServiceProvider provider;
 
         private readonly string folder = Path.Join(Directory.GetCurrentDirectory(), "staging");
-        private readonly string processed = Path.Join(Directory.GetCurrentDirectory(), "uploads");
 
         public FileManipulatorService(IServiceProvider provider) {
             this.provider = provider;
@@ -22,7 +21,6 @@ namespace WebApi.BackgroundServices {
         protected async override Task ExecuteAsync(CancellationToken stoppingToken) {
             
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-            if (!Directory.Exists(processed)) Directory.CreateDirectory(processed);
 
             var watcher = new FileSystemWatcher(folder) {
                 EnableRaisingEvents = true,

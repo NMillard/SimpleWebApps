@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using WebApi.Exceptions;
 using WebApi.Models;
 
 namespace WebApi.Repositories {
@@ -13,20 +12,12 @@ namespace WebApi.Repositories {
         public UserRepository(AppDbContext context) : base(context) { }
 
         public override User Get(int id) {
-            return Set.Include(user => user.Articles)
-                .SingleOrDefault(user => user.Id == id);
-        }
-
-        public override void Create(User entity) {
-            Set.Add(entity);
-            SaveChanges();
-        }
-
-        public override void Delete(int id) {
-            User user = Get(id);
-            Set.Remove(user);
-
-            SaveChanges();
+            var user = base.Get(id);
+            Entities.Attach(user).Collection(u => u.Articles).Load();
+            
+            if (user is null) throw new EntityNotFoundException<User>(id);
+            
+            return user;
         }
     }
 }

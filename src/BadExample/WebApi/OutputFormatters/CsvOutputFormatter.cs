@@ -10,7 +10,7 @@ namespace WebApi.OutputFormatters {
     public class CsvOutputFormatter : OutputFormatter {
 
         public CsvOutputFormatter() {
-            SupportedMediaTypes.Add("application/csv");
+            SupportedMediaTypes.Add("text/csv");
         }
 
         protected override bool CanWriteType(Type type) {
@@ -24,6 +24,7 @@ namespace WebApi.OutputFormatters {
 
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine(string.Join(",", contextType.First().GetCsvPropertyNames()));
+            
             foreach (ICsvSerializable csvSerializable in contextType) {
                 stringBuilder.AppendLine(csvSerializable.ToCsv());
             }

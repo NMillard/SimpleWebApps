@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Exceptions;
 using WebApi.Models;
 
 namespace WebApi.Repositories {
@@ -18,28 +19,42 @@ namespace WebApi.Repositories {
     
     public abstract class RepositoryBase<T> where T : EntityBase {
         private readonly AppDbContext context;
-        protected readonly DbSet<T> Set;
+        protected readonly DbSet<T> Entities;
 
         protected RepositoryBase(AppDbContext context) {
             this.context = context;
-            Set = context.Set<T>();
+            Entities = context.Set<T>();
         }
 
         public virtual T Get(int id) {
-            return Set.SingleOrDefault(e => e.Id.Equals(id));
+            T entity = Entities.SingleOrDefault(e => e.Id.Equals(id));
+            if (entity is null) throw new EntityNotFoundException<T>(id);
+            
+            return entity;
         }
 
         public virtual List<T> All() {
-            return Set.ToList();
+            return Entities.ToList();
         }
 
         public virtual void Update(T entity) {
-            Set.Update(entity);
+            Entities.Update(entity);
             SaveChanges();
         }
         
-        public abstract void Create(T entity);
-        public abstract void Delete(int id);
+        public virtual int Create(T entity) {
+            Entities.Add(entity);
+            SaveChanges();
+
+            return entity.Id;
+        }
+
+        public virtual void Delete(int id) {
+            T entity = Get(id);
+            Entities.Remove(entity);
+
+            SaveChanges();
+        }
 
         protected bool SaveChanges() {
             try {

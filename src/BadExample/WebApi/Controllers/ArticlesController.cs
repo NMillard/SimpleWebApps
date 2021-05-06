@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,6 @@ using WebApi.Models;
 using WebApi.Repositories;
 
 namespace WebApi.Controllers {
-
     [Route("api/[controller]")]
     public class ArticlesController : ControllerBase {
         private readonly ArticleRepository articleRepository;
@@ -17,7 +17,7 @@ namespace WebApi.Controllers {
             this.articleRepository = articleRepository;
         }
 
-        [HttpGet("/{id:int}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(int id) {
@@ -30,8 +30,8 @@ namespace WebApi.Controllers {
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Produces(MediaTypeNames.Application.Json, "application/csv")]
+        [ProducesResponseType(typeof(IEnumerable<Article>), StatusCodes.Status200OK)]
+        [Produces(MediaTypeNames.Application.Json, "text/csv")]
         public IActionResult All() {
             return Ok(articleRepository.All());
         }
@@ -41,15 +41,15 @@ namespace WebApi.Controllers {
             if (!ModelState.IsValid) {
                 return BadRequest();
             }
-            
+
             var article = new Article {
                 Content = model.Content,
                 UserId = model.UserId,
                 TimePublished = DateTime.Now,
             };
-            
-            articleRepository.Create(article);
-            return Ok();
+
+            int id = articleRepository.Create(article);
+            return Ok(new { Id = id });
         }
 
         [HttpDelete("{id:int}")]

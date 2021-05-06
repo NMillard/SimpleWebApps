@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using WebApi.BackgroundServices;
 using WebApi.OutputFormatters;
 using WebApi.Repositories;
 
@@ -25,7 +25,27 @@ namespace WebApi {
                 options.RespectBrowserAcceptHeader = true; // allows us to use OutputFormatters
                 options.OutputFormatters.Add(new CsvOutputFormatter());
             });
-            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" }));
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
+                c.AddSecurityDefinition("jwt", new OpenApiSecurityScheme {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Use your JWT",
+                    In = ParameterLocation.Header,
+                    BearerFormat = "JWT"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "jwt",
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
+            });
             services.AddDbContext<AppDbContext>();
             services.AddScoped<UserRepository>();
             services.AddScoped<ArticleRepository>();
@@ -42,14 +62,15 @@ namespace WebApi {
                         ValidateAudience = false,
                     };
                 });
-            
+
             // Run migrations on startup
             var db = services.BuildServiceProvider().GetRequiredService<AppDbContext>();
             db.Database.Migrate();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) { // bad practice to have dev and prod environments behave differently
+            if (env.IsDevelopment()) {
+                // bad practice to have dev and prod environments behave differently
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger()
                     .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
