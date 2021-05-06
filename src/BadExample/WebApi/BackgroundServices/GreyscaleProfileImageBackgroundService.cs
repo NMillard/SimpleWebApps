@@ -55,6 +55,10 @@ namespace WebApi.BackgroundServices {
                     bitmap.Save(imageStream, ImageFormat.Jpeg);
                     
                     UpdateUserProfileImage(userId, imageStream.ToArray());
+                    image.Close();
+                    imageStream.Close();
+                    
+                    File.Delete(path); // Remove file after processing
                 } catch (IOException) {
                     isReady = false;
                 }
