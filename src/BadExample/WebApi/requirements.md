@@ -28,5 +28,6 @@ Users controller
 Articles controller
 [] Get all articles - JSON | CSV
 [] Get single article
+    Not found should throw an error
 [] Delete an article
 

@@ -9,7 +9,7 @@ Authorization: Bearer insert_api_token
 
 ###
 
-GET https://localhost:5001/api/articles/all
+GET https://localhost:5001/api/articles
 Accept: application/csv
 
 ###

@@ -3,6 +3,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Dtos;
+using WebApi.Exceptions;
 using WebApi.Models;
 using WebApi.Repositories;
 
@@ -17,9 +18,15 @@ namespace WebApi.Controllers {
         }
 
         [HttpGet("/{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(int id) {
-            Article article = articleRepository.Get(id);
-            return Ok(article);
+            try {
+                Article article = articleRepository.Get(id);
+                return Ok(article);
+            } catch (EntityNotFoundException<Article> e) {
+                return NotFound(new { e.Message });
+            }
         }
 
         [HttpGet]

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Models;
@@ -35,11 +36,13 @@ namespace WebApi.Repositories {
         public abstract void Create(T entity);
         public abstract void Delete(int id);
 
-        /*
-         * Not catching exceptions will bite you in the A...
-         */
-        protected void SaveChanges() {
-            context.SaveChanges();
+        protected bool SaveChanges() {
+            try {
+                context.SaveChanges();
+                return true;
+            } catch (Exception) {
+                return false;
+            }
         }
     }
 }
