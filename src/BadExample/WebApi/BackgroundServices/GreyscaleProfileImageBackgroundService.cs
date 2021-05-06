@@ -9,12 +9,12 @@ using Microsoft.Extensions.Hosting;
 using WebApi.Repositories;
 
 namespace WebApi.BackgroundServices {
-    public class FileManipulatorService : BackgroundService {
+    public class GreyscaleProfileImageBackgroundService : BackgroundService {
         private readonly IServiceProvider provider;
 
         private readonly string folder = Path.Join(Directory.GetCurrentDirectory(), "staging");
 
-        public FileManipulatorService(IServiceProvider provider) {
+        public GreyscaleProfileImageBackgroundService(IServiceProvider provider) {
             this.provider = provider;
         }
         
