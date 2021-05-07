@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BadExample", "BadExample", "{6440D49C-9B9F-4238-8C60-4094607E4357}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleExample", "SimpleExample", "{6440D49C-9B9F-4238-8C60-4094607E4357}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\BadExample\WebApi\WebApi.csproj", "{AA7292B4-5641-4DCF-83CC-3FB458BFEC43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\SimpleExample\WebApi\WebApi.csproj", "{AAA2303B-CFC5-485E-BA99-E072B54FDE7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,10 +10,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA7292B4-5641-4DCF-83CC-3FB458BFEC43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA7292B4-5641-4DCF-83CC-3FB458BFEC43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA2303B-CFC5-485E-BA99-E072B54FDE7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA2303B-CFC5-485E-BA99-E072B54FDE7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AA7292B4-5641-4DCF-83CC-3FB458BFEC43} = {6440D49C-9B9F-4238-8C60-4094607E4357}
+		{AAA2303B-CFC5-485E-BA99-E072B54FDE7C} = {6440D49C-9B9F-4238-8C60-4094607E4357}
 	EndGlobalSection
 EndGlobal
