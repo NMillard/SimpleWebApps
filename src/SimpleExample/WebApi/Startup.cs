@@ -46,7 +46,10 @@ namespace WebApi {
                     }
                 });
             });
-            services.AddDbContext<AppDbContext>();
+            
+            services.AddDbContext<AppDbContext>(config => {
+                config.UseSqlServer(Configuration.GetConnectionString("default"));
+            });
             services.AddScoped<UserRepository>();
             services.AddScoped<ArticleRepository>();
 
