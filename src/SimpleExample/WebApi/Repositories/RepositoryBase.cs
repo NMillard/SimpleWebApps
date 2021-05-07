@@ -8,7 +8,10 @@ using WebApi.Models;
 namespace WebApi.Repositories {
     
     /*
-     * Generic repository base classes are likely unnecessary and forces
+     * Like the EntityBase class, generic repositories may be okay
+     * for beginners.
+     * 
+     * But, generic repository base classes are likely unnecessary and forces
      * your subclasses to implement behavior that is not needed.
      * A repository should, in my mind, be task-oriented and not
      * CRUD-based.

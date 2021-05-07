@@ -3,7 +3,10 @@
 namespace WebApi.Models {
     
     /*
-     * Creating a base that all entities must inherit from is poor design.
+     * This is okay for beginners starting out with attempting to improve
+     * their design.
+     * 
+     * But, creating a base that all entities must inherit from is often poor design.
      * It looks nice, and it feels good, but it's providing you the
      * flexibility to design your entities exactly the way you want.
      *

@@ -6,6 +6,10 @@ using System.Text.Json.Serialization;
 namespace WebApi.Models {
     public class Article : EntityBase, ICsvSerializable {
         
+        /*
+         * Avoid issues with serializing this type to json by
+         * ignoring the user property.
+         */
         [JsonIgnore]
         public User User { get; set; }
 
