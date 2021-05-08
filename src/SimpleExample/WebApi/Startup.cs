@@ -25,6 +25,7 @@ namespace WebApi {
                 options.RespectBrowserAcceptHeader = true; // allows us to use OutputFormatters
                 options.OutputFormatters.Add(new CsvOutputFormatter());
             });
+            
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
                 c.AddSecurityDefinition("jwt", new OpenApiSecurityScheme {

@@ -18,8 +18,6 @@ namespace WebApi.Controllers {
         }
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(int id) {
             try {
                 Article article = articleRepository.Get(id);
@@ -36,6 +34,11 @@ namespace WebApi.Controllers {
             return Ok(articleRepository.All());
         }
 
+        [HttpGet("paged")]
+        public IActionResult Paged(int page = 0, int limit = 5) {
+            return Ok(articleRepository.GetPaged(page, limit));
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] CreateArticleDto model) {
             if (!ModelState.IsValid) {
@@ -49,6 +52,7 @@ namespace WebApi.Controllers {
             };
 
             int id = articleRepository.Create(article);
+            
             return Ok(new { Id = id });
         }
 

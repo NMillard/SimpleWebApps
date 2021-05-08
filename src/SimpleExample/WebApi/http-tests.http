@@ -5,7 +5,7 @@ Accept: application/json
 
 GET https://localhost:5001/api/users
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIn0.sQx7B6zJ_E2Z-0wm11Ug6oYeER6U3tFC9Z55jR_Ibe8
+Authorization: Bearer insert_auth
 
 ###
 

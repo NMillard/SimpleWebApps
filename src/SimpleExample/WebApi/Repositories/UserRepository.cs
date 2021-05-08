@@ -1,5 +1,4 @@
-﻿using WebApi.Exceptions;
-using WebApi.Models;
+﻿using WebApi.Models;
 
 namespace WebApi.Repositories {
     /*
@@ -10,7 +9,7 @@ namespace WebApi.Repositories {
      */
     public class UserRepository : RepositoryBase<User> {
         public UserRepository(AppDbContext context) : base(context) { }
-
+        
         public override User Get(int id) {
             var user = base.Get(id);
             Entities.Attach(user).Collection(u => u.Articles).Load();

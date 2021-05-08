@@ -33,40 +33,16 @@ namespace WebApi.Controllers {
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("me")]
         public IActionResult Get() {
             string userId = HttpContext.User.FindFirstValue("userId");
             User user = userRepository.Get(int.Parse(userId));
             return Ok(user);
         }
-
-        [HttpPost("{userId:int}/upload/profileimage")]
-        public async Task<IActionResult> UploadProfileImage(int userId, IFormFile picture) {
-            bool imageIsTooLarge = picture.Length / 1024 > 1024;
-            if (imageIsTooLarge) return BadRequest(new { Message = "Image cannot exceed 1MB" });
-            
-            string savePath = Path.Combine(Directory.GetCurrentDirectory(), "staging");
-            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
-
-            string fileExtension = picture.FileName.Split(".")[^1];
-            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}.{fileExtension}";
-
-            var img = new FileInfo(Path.Combine(savePath, fileName));
-            FileStream stream = img.OpenWrite();
-            await picture.CopyToAsync(stream);
-            
-            stream.Close();
-
-            return Ok();
-        }
-
-        [HttpGet("{userId:int}/view/profileimage")]
-        public IActionResult ViewProfileImage(int userId) {
-            User user = userRepository.Get(userId);
-            return File(user.ProfileImage, "image/jpeg");
-        }
-
-        // Just some stupid login function that has absolutely no real security.
+        
+        /// <summary>
+        /// Just some very simple login function without any real security.
+        /// </summary>
         [HttpGet("login/{userId:int}")]
         public IActionResult Login(int userId) {
             try {
@@ -94,6 +70,36 @@ namespace WebApi.Controllers {
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return Ok(new { Token = token });
+        }
+
+        [HttpPost("{userId:int}/upload/profileimage")]
+        public async Task<IActionResult> UploadProfileImage(int userId, IFormFile picture) {
+            // Check if image is too large
+            bool imageIsTooLarge = picture.Length / 1024 > 1024;
+            if (imageIsTooLarge) return BadRequest(new { Message = "Image cannot exceed 1MB" });
+            
+            // Path where we'd like to save the image
+            string savePath = Path.Combine(Directory.GetCurrentDirectory(), "staging");
+            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+
+            // Generate new file name with user id prefixed
+            string fileExtension = Path.GetExtension(picture.FileName);
+            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}.{fileExtension}"; // -> 1-file.png
+
+            // Save file
+            var img = new FileInfo(Path.Combine(savePath, fileName));
+            FileStream stream = img.OpenWrite();
+            await picture.CopyToAsync(stream);
+            
+            stream.Close();
+
+            return Ok();
+        }
+
+        [HttpGet("{userId:int}/view/profileimage")]
+        public IActionResult ViewProfileImage(int userId) {
+            User user = userRepository.Get(userId);
+            return File(user.ProfileImage, "image/jpeg");
         }
     }
 }

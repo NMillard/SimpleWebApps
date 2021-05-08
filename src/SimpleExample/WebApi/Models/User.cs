@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
  * User class that acts as domain, persistence and transfer model.
  * Way too many responsibilities crammed into one class.
  */
-
 namespace WebApi.Models {
     
     [Table("Users")]
