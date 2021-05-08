@@ -41,6 +41,7 @@ namespace WebApi.BackgroundServices {
 
                     GreyScaleImage(bitmap);
 
+                    // We expect profile images to be uploaded as userId-Guid.extension eg. 1-Guid.png
                     int userId = int.Parse(path.Split("-")[0].Split(Path.DirectorySeparatorChar)[^1]);
                     
                     await using var imageStream = new MemoryStream();
@@ -69,12 +70,11 @@ namespace WebApi.BackgroundServices {
         }
 
         private void UpdateUserProfileImage(int userId, byte[] imageBlob) {
+            // Background services need to create their own scope and request services
             using var scope = provider.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<UserRepository>();
             
             var user = repository.Get(userId);
-            if (user is null) return;
-            
             user.ProfileImage = imageBlob;
             
             repository.Update(user);
