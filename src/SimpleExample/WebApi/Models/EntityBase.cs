@@ -15,7 +15,7 @@ namespace WebApi.Models {
      */
     public class EntityBase {
         
-        [Key] // <- please no.
+        [Key]
         public int Id { get; set; }
     }
 }

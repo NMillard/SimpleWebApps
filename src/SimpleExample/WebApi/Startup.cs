@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebApi.Exceptions;
 using WebApi.OutputFormatters;
 using WebApi.Repositories;
 
@@ -21,10 +22,11 @@ namespace WebApi {
         private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers().AddMvcOptions(options => {
-                options.RespectBrowserAcceptHeader = true; // allows us to use OutputFormatters
-                options.OutputFormatters.Add(new CsvOutputFormatter());
-            });
+            services.AddControllers()
+                .AddMvcOptions(options => {
+                    options.Filters.Add(new ApplicationExceptionsFilter());
+                    options.OutputFormatters.Add(new CsvOutputFormatter());
+                });
             
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
@@ -51,6 +53,7 @@ namespace WebApi {
             services.AddDbContext<AppDbContext>(config => {
                 config.UseSqlServer(Configuration.GetConnectionString("default"));
             });
+
             services.AddScoped<UserRepository>();
             services.AddScoped<ArticleRepository>();
 
@@ -67,7 +70,7 @@ namespace WebApi {
                     };
                 });
 
-            // Run migrations on startup
+            // Run migrations on startup - this is NOT a best practice, but fine for development purposes
             var db = services.BuildServiceProvider().GetRequiredService<AppDbContext>();
             db.Database.Migrate();
         }

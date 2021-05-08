@@ -16,6 +16,7 @@ using WebApi.Models;
 using WebApi.Repositories;
 
 namespace WebApi.Controllers {
+    
     [Route("api/[controller]")]
     public class UsersController : ControllerBase {
         private readonly UserRepository userRepository;
@@ -84,7 +85,7 @@ namespace WebApi.Controllers {
 
             // Generate new file name with user id prefixed
             string fileExtension = Path.GetExtension(picture.FileName);
-            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}.{fileExtension}"; // -> 1-file.png
+            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}.{fileExtension}"; // -> 1-Guid.png
 
             // Save file
             var img = new FileInfo(Path.Combine(savePath, fileName));
@@ -98,8 +99,12 @@ namespace WebApi.Controllers {
 
         [HttpGet("{userId:int}/view/profileimage")]
         public IActionResult ViewProfileImage(int userId) {
-            User user = userRepository.Get(userId);
-            return File(user.ProfileImage, "image/jpeg");
+            try {
+                User user = userRepository.Get(userId);
+                return File(user.ProfileImage, "image/jpeg");
+            } catch (EntityNotFoundException<User> e) {
+                return NotFound(new { e.Message });
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace WebApi.Models {
-    public class Article : EntityBase, ICsvSerializable {
+    public class Article : EntityBase {
         
         [Required]
         public string Content { get; set; }
@@ -21,16 +21,5 @@ namespace WebApi.Models {
 
         [ForeignKey(nameof(User))]
         public int UserId { get; set; }
-
-        public string[] GetCsvPropertyNames() {
-            return new[] {
-                nameof(UserId),
-                nameof(TimePublished)
-            };
-        }
-
-        public string ToCsv() {
-            return $"{UserId.ToString()},{TimePublished:d}";
-        }
     }
 }
