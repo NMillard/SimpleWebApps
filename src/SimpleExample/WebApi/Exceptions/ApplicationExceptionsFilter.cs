@@ -8,7 +8,7 @@ namespace WebApi.Exceptions {
         
         public Task OnExceptionAsync(ExceptionContext context) {
             
-            if (context.Exception is  ApplicationExceptionBase ex) {
+            if (context.Exception is ApplicationExceptionBase ex) {
                 context.ExceptionHandled = true;
                 context.HttpContext.Response.StatusCode = ex.GetType().GetGenericTypeDefinition() == typeof(EntityNotFoundException<>) ? 
                         StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest;

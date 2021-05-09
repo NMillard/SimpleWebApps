@@ -20,12 +20,8 @@ namespace WebApi.Controllers {
 
         [HttpGet("{id:int}")]
         public IActionResult Get(int id) {
-            try {
-                Article article = articleRepository.Get(id);
-                return Ok(article);
-            } catch (EntityNotFoundException<Article> e) {
-                return NotFound(new { e.Message });
-            }
+            Article article = articleRepository.Get(id);
+            return Ok(article);
         }
 
         [HttpGet]

@@ -39,7 +39,7 @@ namespace WebApi.BackgroundServices {
                     
                     var bitmap = new Bitmap(image);
 
-                    GreyScaleImage(bitmap);
+                    GrayScaleImage(bitmap);
 
                     // We expect profile images to be uploaded as userId-Guid.extension eg. 1-Guid.png
                     int userId = int.Parse(path.Split("-")[0].Split(Path.DirectorySeparatorChar)[^1]);
@@ -58,13 +58,13 @@ namespace WebApi.BackgroundServices {
             }
         }
 
-        private static void GreyScaleImage(Bitmap bitmap) {
+        private static void GrayScaleImage(Bitmap bitmap) {
             for (int x = 0; x < bitmap.Width; x++) {
                 for (int y = 0; y < bitmap.Height; y++) {
                     Color color = bitmap.GetPixel(x, y);
                     int grayScale = (color.R + color.G + color.B) / 3;
-                    Color greyScale = Color.FromArgb(grayScale, grayScale, grayScale);
-                    bitmap.SetPixel(x, y, greyScale);
+                    Color grayScaleColor = Color.FromArgb(grayScale,grayScale,grayScale);
+                    bitmap.SetPixel(x, y, grayScaleColor);
                 }
             }
         }

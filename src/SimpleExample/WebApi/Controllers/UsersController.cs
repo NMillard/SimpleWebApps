@@ -46,12 +46,8 @@ namespace WebApi.Controllers {
         /// </summary>
         [HttpGet("login/{userId:int}")]
         public IActionResult Login(int userId) {
-            try {
-                userRepository.Get(userId);
-            } catch (EntityNotFoundException<User> e) {
-                return NotFound(new { e.Message });
-            } 
-            
+            userRepository.Get(userId);
+
             string privateKey = configuration["Auth:PrivateKey"];
 
             var credentials = new SigningCredentials(
@@ -85,7 +81,7 @@ namespace WebApi.Controllers {
 
             // Generate new file name with user id prefixed
             string fileExtension = Path.GetExtension(picture.FileName);
-            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}.{fileExtension}"; // -> 1-Guid.png
+            string fileName = $"{userId.ToString()}-{Guid.NewGuid():N}{fileExtension}"; // -> 1-Guid.png
 
             // Save file
             var img = new FileInfo(Path.Combine(savePath, fileName));
@@ -99,12 +95,8 @@ namespace WebApi.Controllers {
 
         [HttpGet("{userId:int}/view/profileimage")]
         public IActionResult ViewProfileImage(int userId) {
-            try {
-                User user = userRepository.Get(userId);
-                return File(user.ProfileImage, "image/jpeg");
-            } catch (EntityNotFoundException<User> e) {
-                return NotFound(new { e.Message });
-            }
+            User user = userRepository.Get(userId);
+            return File(user.ProfileImage, "image/jpeg");
         }
     }
 }
