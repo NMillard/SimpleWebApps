@@ -1,0 +1,11 @@
+GET https://localhost:5001/api/test/generate
+Accept: application/json
+
+###
+GET https://localhost:5001/api/test
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2MjA1ODU3NDYsImV4cCI6MTYyMDYwMzc0NiwiaXNzIjoid2ViYXBpIiwiYXVkIjoid2ViYXBpIn0.GeUwTpYnFbLJdT9wy7WNWZ7b_klZHb_5GFueVcahANm1dPWxR1wQAI8HyOsDPRYuA0QTv1moTOuaM1DrjxKYzfRRUZQJ7ywiwIJEWZ6c5pYNxQBCRTqq8mQL945QrnBhQTePlGguQKQIPWS8jMZFjUyAndfZP-yeEmvFYTnX-t4b-HYFC84jXh1VmMwuxL-hFptoDL-fKoMk0v4tAjYrF5Bm2o_nfhnfaRHIbRz-4zawz6Pu5KnGEUGPc4UoXhyw9LqC4P74IEq2gIygkxQlXW23C7H0fuLyWmXS7hJSxiK_ABA0279xgRE_rqyD1tG4FOW_GP3Ltn0J-sKuXr7osA
+
+###
+
+
