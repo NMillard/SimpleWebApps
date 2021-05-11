@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using TokenGeneratorWebApi.Configurations;
 
 namespace TokenGeneratorWebApi {
@@ -27,6 +28,12 @@ namespace TokenGeneratorWebApi {
             
             privateKeyFile.Close();
             publicKeyFile.Close();
+
+            services.AddSingleton(_ => {
+                var privateRsa = RSA.Create();
+                privateRsa.FromXmlString(privateKey);
+                return new RsaSecurityKey(privateRsa);
+            });
 
             return services;
         }

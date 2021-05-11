@@ -1,5 +1,10 @@
+using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,8 +29,9 @@ namespace TokenGeneratorWebApi {
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
-            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "TokenGeneratorWebApi", Version = "v1" }));
-            
+            services.AddSwaggerGen(c =>
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TokenGeneratorWebApi", Version = "v1" }));
+
             string rsaPrivatePath = Configuration["SecurityOptions:RsaPrivateKeyPath"];
             string rsaPublicPath = Configuration["SecurityOptions:RsaPublicKeyPath"];
             services.AddRSAKey(options => {
@@ -34,22 +40,22 @@ namespace TokenGeneratorWebApi {
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(async options => {
-                    var rsa = RSA.Create();
-                    string keyContent = await File.ReadAllTextAsync(rsaPublicPath);
-                    rsa.FromXmlString(keyContent);
+                .AddJwtBearer(options => {
+                    var key = services.BuildServiceProvider().GetRequiredService<RsaSecurityKey>();
                     
                     options.IncludeErrorDetails = true;
                     options.TokenValidationParameters = new TokenValidationParameters {
-                        IssuerSigningKey = new RsaSecurityKey(rsa),
-                        ValidateAudience = false,
-                        ValidateIssuer = false,
-                        ValidateLifetime = true,
-                        ValidAudience = "webapi",
-                        ValidIssuer = "webapi",
+                        IssuerSigningKey = key,
                         RequireAudience = true,
                         RequireExpirationTime = true,
-                        AuthenticationType = JwtBearerDefaults.AuthenticationScheme,
+                        ValidIssuer = "webapi",
+                        ValidAudience = "webapi",
+                        ValidateLifetime = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        RequireSignedTokens = true,
+                        ValidateIssuer = true,
+                        AuthenticationType = JwtBearerDefaults.AuthenticationScheme
                     };
                 });
         }
@@ -65,6 +71,7 @@ namespace TokenGeneratorWebApi {
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
