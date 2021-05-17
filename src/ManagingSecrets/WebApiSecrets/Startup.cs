@@ -21,7 +21,7 @@ namespace WebApiSecrets {
             });
 
             var connectionOptions = new ConnectionOptions();
-            Configuration.Bind("ConnectionStrings", connectionOptions);
+            connectionOptions.Sql = Configuration.GetConnectionString(nameof(ConnectionOptions.Sql));
             services.AddSingleton(connectionOptions);
         }
 

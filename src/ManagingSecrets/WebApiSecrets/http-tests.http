@@ -1,4 +1,4 @@
-﻿GET https://localhost:5001/api/secrets/AllSecrets
+﻿GET https://localhost:5001/api/secrets/ConnectionStrings
 Accept: application/json
 
 ###
