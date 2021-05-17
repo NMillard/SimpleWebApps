@@ -1,5 +1,5 @@
 ﻿namespace WebApiSecrets.Configurations {
-    public class ConnectionStringOptions {
+    public class ConnectionOptions {
         public string Sql { get; set; }
     }
 }

@@ -5,9 +5,9 @@ namespace WebApiSecrets.Controllers {
 
     [Route("api/[controller]")]
     public class SecretsController : ControllerBase {
-        private readonly ConnectionStringOptions options;
+        private readonly ConnectionOptions options;
 
-        public SecretsController(ConnectionStringOptions options) {
+        public SecretsController(ConnectionOptions options) {
             this.options = options;
         }
 

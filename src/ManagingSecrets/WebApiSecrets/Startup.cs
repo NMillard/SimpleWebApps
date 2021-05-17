@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using WebApiSecrets.Configurations;
 
 namespace WebApiSecrets {
     public class Startup {
@@ -18,6 +19,10 @@ namespace WebApiSecrets {
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiSecrets", Version = "v1" });
             });
+
+            var connectionOptions = new ConnectionOptions();
+            Configuration.Bind("ConnectionStrings", connectionOptions);
+            services.AddSingleton(connectionOptions);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
