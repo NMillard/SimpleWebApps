@@ -1,6 +1,7 @@
-namespace TokenGeneratorWebApi.Configurations {
+﻿namespace TokenGeneratorWebApi.Configurations {
     public class SecurityOptions {
-        public string RsaPrivateKeyPath { get; set; }
-        public string RsaPublicKeyPath { get; set; }
+        public string PrivateKeyFilePath { get; set; }
+        public string PublicKeyFilePath { get; set; }
+        public string SymmetricKey { get; set; }
     }
 }

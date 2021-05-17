@@ -1,10 +1,6 @@
-using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,11 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-/*
- * This web api will generate tokens
- * 
- */
+using TokenGeneratorWebApi.Configurations;
 
 namespace TokenGeneratorWebApi {
     public class Startup {
@@ -32,30 +24,37 @@ namespace TokenGeneratorWebApi {
             services.AddSwaggerGen(c =>
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TokenGeneratorWebApi", Version = "v1" }));
 
-            string rsaPrivatePath = Configuration["SecurityOptions:RsaPrivateKeyPath"];
-            string rsaPublicPath = Configuration["SecurityOptions:RsaPublicKeyPath"];
-            services.AddRSAKey(options => {
-                options.RsaPrivateKeyPath = rsaPrivatePath;
-                options.RsaPublicKeyPath = rsaPublicPath;
-            });
+            var securityOptions = new SecurityOptions();
+            Configuration.Bind(nameof(SecurityOptions), securityOptions);
+            services.AddSingleton(securityOptions);
 
+            services.AddRsaKeys(securityOptions);
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
-                    var key = services.BuildServiceProvider().GetRequiredService<RsaSecurityKey>();
+                    var rsa = RSA.Create();
+                    string key = File.ReadAllText(securityOptions.PublicKeyFilePath);
+                    rsa.FromXmlString(key);
                     
-                    options.IncludeErrorDetails = true;
                     options.TokenValidationParameters = new TokenValidationParameters {
-                        IssuerSigningKey = key,
-                        RequireAudience = true,
-                        RequireExpirationTime = true,
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
                         ValidIssuer = "webapi",
                         ValidAudience = "webapi",
-                        ValidateLifetime = true,
+                        IssuerSigningKey = new RsaSecurityKey(rsa)
+                    };
+                })
+                .AddJwtBearer("symm", options => {
+                    options.TokenValidationParameters = new TokenValidationParameters {
                         ValidateAudience = true,
-                        ValidateIssuerSigningKey = true,
-                        RequireSignedTokens = true,
                         ValidateIssuer = true,
-                        AuthenticationType = JwtBearerDefaults.AuthenticationScheme
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "webapi",
+                        ValidAudience = "webapi",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityOptions.SymmetricKey))
                     };
                 });
         }

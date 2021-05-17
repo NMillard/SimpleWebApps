@@ -1,39 +1,24 @@
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using TokenGeneratorWebApi.Configurations;
 
 namespace TokenGeneratorWebApi {
     public static class ServiceInjector {
-        public static IServiceCollection AddRSAKey(this IServiceCollection services, Action<SecurityOptions> config) {
-            var options = new SecurityOptions();
-            config(options);
+        public static IServiceCollection AddRsaKeys(this IServiceCollection services, SecurityOptions options) {
+            string keysFolder = Path.GetDirectoryName(options.PrivateKeyFilePath);
+            if (!Directory.Exists(keysFolder)) Directory.CreateDirectory(keysFolder);
 
-            services.AddSingleton(options);
+            var rsa = RSA.Create();
+            string privateKeyXml = rsa.ToXmlString(true);
+            string publicKeyXml = rsa.ToXmlString(false);
 
-            string keysDirectory = Path.GetDirectoryName(options.RsaPrivateKeyPath);
-            if (!Directory.Exists(keysDirectory)) Directory.CreateDirectory(keysDirectory);
+            using var privateFile = File.Create(options.PrivateKeyFilePath);
+            using var publicFile = File.Create(options.PublicKeyFilePath);
             
-            using var rsa = RSA.Create();
-            using FileStream privateKeyFile = File.Create(options.RsaPrivateKeyPath);
-            using FileStream publicKeyFile = File.Create(options.RsaPublicKeyPath);
-
-            string privateKey = rsa.ToXmlString(true);
-            string publicKey = rsa.ToXmlString(false);
-            privateKeyFile.Write(Encoding.UTF8.GetBytes(privateKey));
-            publicKeyFile.Write(Encoding.UTF8.GetBytes(publicKey));
-            
-            privateKeyFile.Close();
-            publicKeyFile.Close();
-
-            services.AddSingleton(_ => {
-                var privateRsa = RSA.Create();
-                privateRsa.FromXmlString(privateKey);
-                return new RsaSecurityKey(privateRsa);
-            });
+            privateFile.Write(Encoding.UTF8.GetBytes(privateKeyXml));
+            publicFile.Write(Encoding.UTF8.GetBytes(publicKeyXml));
 
             return services;
         }
