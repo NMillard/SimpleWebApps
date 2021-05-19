@@ -5,6 +5,10 @@
  * 
  * Each example shows the verbose/"bad" way, and
  * a corresponding clean modern way.
+ *
+ * Writing clean code is largely about reducing the
+ * noise-to-signal ratio. You want to convey intent
+ * and concepts as clearly as possible.
  */
 
 void UnnecessaryBooleanChecks(bool hasPermissions) {
@@ -50,12 +54,14 @@ void ConditionalAssignment(bool operationSucceeded) {
 }
 
 bool ExplainConditionalLogic(int age) {
+    // verbose
     if (age >= 16) {
         return true;
     } else {
         return false;
     }
     
+    // clean
     bool isOldEnoughToBuyAlcohol = age >= 16;
     return isOldEnoughToBuyAlcohol;
 }
@@ -75,6 +81,7 @@ void DefaultValueAssignment(string? message) {
 void ConditionalMemberAccess(string? title) {
     bool isAllowedEntrance = false;
 
+    // verbose
     if (!string.IsNullOrEmpty(title) && title.Contains("senior")) {
         isAllowedEntrance = true;
     }
