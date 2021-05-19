@@ -2,6 +2,8 @@
 using System.Linq;
 
 /*
+ * Code walk-thru here: https://www.youtube.com/watch?v=goVjlWLY9NQ
+ * 
  * Quick and easy way to write simple, clean code.
  * 
  * Each example shows the verbose/"bad" way, and
