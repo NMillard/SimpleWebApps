@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 /*
  * Quick and easy way to write simple, clean code.
@@ -103,4 +104,31 @@ void CascadingNullCoalescing(bool? value1, bool? value2, bool? value3) {
                value2 ??
                value3 ??
                false;
+}
+
+bool FailFastWithGuardClauses(string? password) {
+    // verbose
+    bool hasValue = !string.IsNullOrEmpty(password);
+    if (hasValue) {
+        bool hasSpecialCharacter = password.Any(character => !char.IsLetterOrDigit(character));
+        if (hasSpecialCharacter) {
+            bool longEnough = password.Length >= 10;
+            if (longEnough) {
+                return true;
+            } else {
+                throw new ArgumentException("Must be at least 10 characters");
+            }
+        } else {
+            throw new ArgumentException("Must contain at least one special character");
+        }
+    } else {
+        throw new ArgumentException("Password must have a value", nameof(password));
+    }
+    
+    // clean
+    if (string.IsNullOrEmpty(password)) throw new ArgumentException("Cannot be null or empty");
+    if (password.Any(character => !char.IsLetterOrDigit(character))) throw new ArgumentException("Must contain at least one special character");
+    if (password.Length >= 10) throw new ArgumentException("Must be at least 10 characters");
+
+    return true;
 }
