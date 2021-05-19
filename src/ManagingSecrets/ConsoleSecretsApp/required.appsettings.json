@@ -5,5 +5,11 @@
             "System": "Information",
             "Microsoft": "Information"
         }
+    },
+    "ConnectionStrings": {
+        "Sql": "connection string to sql database"
+    },
+    "Something": {
+        "MyValue": 1
     }
 }
