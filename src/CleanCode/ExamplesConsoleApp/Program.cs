@@ -6,7 +6,7 @@ using System.Linq;
  * 
  * Each example shows the verbose/"bad" way, and
  * a corresponding clean modern way.
- *
+ * 
  * Writing clean code is largely about reducing the
  * noise-to-signal ratio. You want to convey intent
  * and concepts as clearly as possible.
@@ -91,6 +91,9 @@ void ConditionalMemberAccess(string? title) {
     //           null conditional operator     null-coalescing
     //                       |                     |
     isAllowedEntrance = title?.Contains("senior") ?? false;
+    
+    // or
+    isAllowedEntrance = !string.IsNullOrEmpty(title) && title.Contains("senior");
 }
 
 void CascadingNullCoalescing(bool? value1, bool? value2, bool? value3) {
