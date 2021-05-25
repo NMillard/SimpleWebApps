@@ -14,7 +14,7 @@ static void CommentingOnCodeBehavior(ref int number) {
 static void CommentingLanguageSyntax(bool hasAccess) {
     // comments like these assumes the reader don't know the language
     string? message = hasAccess ? "Has access" : "No access"; // Ternary statement
-    int messageLength = message?.Length ?? 00; // conditional access and null-coalescing operator
+    int messageLength = message?.Length ?? 0; // conditional access and null-coalescing operator
 }
 
 static string CommentingOnObviousIntent(int articleStatus) {

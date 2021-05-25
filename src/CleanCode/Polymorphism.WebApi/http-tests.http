@@ -1,0 +1,19 @@
+POST https://localhost:5001/api/users/create/simple
+Content-Type: application/json
+
+{
+  "username": "nicm",
+  "isPremium": false
+}
+
+###
+
+POST https://localhost:5001/api/users/create/poly
+Content-Type: application/json
+
+{
+  "username": "nicm",
+  "isPremium": false
+}
+
+###
