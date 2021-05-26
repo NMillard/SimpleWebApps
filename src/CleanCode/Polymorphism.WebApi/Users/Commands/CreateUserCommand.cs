@@ -13,28 +13,13 @@ namespace Polymorphism.WebApi.Users.Commands {
     
     public class CreateUserCommand : ICreateUserCommand {
         private readonly IUserRepository repository;
+        private readonly string[] validUserTypes = { "regular", "premium" };
 
         public CreateUserCommand(IUserRepository repository) {
             this.repository = repository;
         }
-
-        /*
-         * Traditional branching
-         * Pros/Cons of this approach
-         * + Initial implementation is very quick
-         * + Every developer can read this
-         * + Every branch is immediately visible from one place
-         * + Less overhead regarding classes
-         * - Difficult to extend
-         * - Too many responsibilities
-         * - Cyclomatic and cognitive complexity increases for every branch
-         * - Violates DRY
-         * - Probably violates a bunch of other principles
-         * - Not object-oriented
-         */
+        
         public async Task<bool> ExecuteAsync(UserInput input) {
-            var validUserTypes = new[] { "regular", "premium" };
-
             User user;
             switch (input.UserType) {
                 case "regular":
