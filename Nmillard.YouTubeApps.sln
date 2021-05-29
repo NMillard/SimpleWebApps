@@ -28,6 +28,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polymorphism.Tests", "src\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polymorphism.WebApi", "src\CleanCode\Polymorphism.WebApi\Polymorphism.WebApi.csproj", "{53F509C3-8D60-4E9F-A19A-E28254D0F14C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp", "src\DemoApp\DemoApp.csproj", "{76AA49F4-9B23-4F5C-AC99-C81908BAD2B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GeneralPractices", "GeneralPractices", "{FB3F9844-5F5F-4435-93A6-BDDC68964D32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompositionOverInheritance", "src\GeneralPractices\CompositionOverInheritance\CompositionOverInheritance.csproj", "{81E3B040-68D6-446E-BC21-0FC345046C49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +78,14 @@ Global
 		{53F509C3-8D60-4E9F-A19A-E28254D0F14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53F509C3-8D60-4E9F-A19A-E28254D0F14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53F509C3-8D60-4E9F-A19A-E28254D0F14C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76AA49F4-9B23-4F5C-AC99-C81908BAD2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76AA49F4-9B23-4F5C-AC99-C81908BAD2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76AA49F4-9B23-4F5C-AC99-C81908BAD2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76AA49F4-9B23-4F5C-AC99-C81908BAD2B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81E3B040-68D6-446E-BC21-0FC345046C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81E3B040-68D6-446E-BC21-0FC345046C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81E3B040-68D6-446E-BC21-0FC345046C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81E3B040-68D6-446E-BC21-0FC345046C49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AAA2303B-CFC5-485E-BA99-E072B54FDE7C} = {6440D49C-9B9F-4238-8C60-4094607E4357}
@@ -84,5 +98,6 @@ Global
 		{08E8DD0A-9690-44D7-9A7D-318B04D7E926} = {DFF0E2D4-899E-4E9F-A50B-41EAD9EC7993}
 		{2AC7E79C-4091-4C46-BEA0-6C4053EE7E3E} = {DFF0E2D4-899E-4E9F-A50B-41EAD9EC7993}
 		{53F509C3-8D60-4E9F-A19A-E28254D0F14C} = {DFF0E2D4-899E-4E9F-A50B-41EAD9EC7993}
+		{81E3B040-68D6-446E-BC21-0FC345046C49} = {FB3F9844-5F5F-4435-93A6-BDDC68964D32}
 	EndGlobalSection
 EndGlobal
