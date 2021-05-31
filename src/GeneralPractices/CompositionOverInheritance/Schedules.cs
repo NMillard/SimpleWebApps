@@ -15,7 +15,7 @@ namespace CompositionOverInheritance {
                 case ScheduleType.Daily:
                     // impl
                     break;
-                case ScheduleType.Weekly:
+                case ScheduleType.EndOfWeek:
                     // impl
                     break;
                 default:
@@ -28,7 +28,7 @@ namespace CompositionOverInheritance {
 
     public enum ScheduleType {
         Daily,
-        Weekly
+        EndOfWeek
     }
 
 
@@ -40,10 +40,10 @@ namespace CompositionOverInheritance {
         public bool IsDue() => throw new NotImplementedException();
     }
 
-    public class WeeklySchedule {
+    public class EndOfWeekSchedule {
         private readonly DateTimeOffset created;
 
-        protected WeeklySchedule() => created = DateTimeOffset.UtcNow;
+        protected EndOfWeekSchedule() => created = DateTimeOffset.UtcNow;
 
         public bool IsDue() => throw new NotImplementedException();
     }
