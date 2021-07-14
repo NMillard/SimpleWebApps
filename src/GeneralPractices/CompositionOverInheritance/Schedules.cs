@@ -1,6 +1,10 @@
 ﻿using System;
 
 namespace CompositionOverInheritance {
+    /*
+     * Simple class with basic switch statement.
+     * If you're never going to change or add another schedule type, then this might be completely fine.
+     */
     public class Schedule {
         private readonly ScheduleType type;
         private readonly DateTimeOffset created;
@@ -31,20 +35,27 @@ namespace CompositionOverInheritance {
         EndOfWeek
     }
 
-
     public class DailySchedule {
         private readonly DateTimeOffset created;
 
-        protected DailySchedule() => created = DateTimeOffset.UtcNow;
+        public DailySchedule() {
+            created = DateTimeOffset.UtcNow;
+        }
 
-        public bool IsDue() => throw new NotImplementedException();
+        public bool IsDue() {
+            throw new NotImplementedException();
+        }
     }
 
     public class EndOfWeekSchedule {
         private readonly DateTimeOffset created;
 
-        protected EndOfWeekSchedule() => created = DateTimeOffset.UtcNow;
+        public EndOfWeekSchedule() {
+            created = DateTimeOffset.UtcNow;
+        }
 
-        public bool IsDue() => throw new NotImplementedException();
+        public bool IsDue() {
+            throw new NotImplementedException();
+        }
     }
 }

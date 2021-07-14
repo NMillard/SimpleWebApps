@@ -1,6 +1,6 @@
 using CompositionOverInheritance.Composition;
-using FactoryPattern.Common;
-using FactoryPattern.DynamicFactories;
+using FactoryPattern.Factories;
+using FactoryPattern.Factories.FullyOpenClosed;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,16 +22,17 @@ namespace DemoWebApp {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DemoWebApp", Version = "v1" });
             });
 
-            services.AddSingleton<FactoryPattern.SwitchBased.ScheduleFactory>();
-            services.AddSingleton<FactoryPattern.DictionaryBased.ScheduleFactory>(_ => {
-                var scheduleFactory = new FactoryPattern.DictionaryBased.ScheduleFactory();
+            services.AddSingleton<FactoryPattern.Factories.SwitchBased.ScheduleFactory>();
+            services.AddSingleton<FactoryPattern.Factories.DictionaryBased.ScheduleFactory>(_ => {
+                var scheduleFactory = new FactoryPattern.Factories.DictionaryBased.ScheduleFactory();
                 
-                scheduleFactory.RegisterSchedule("Daily", _ => new Schedule(new DailyTrigger()));
-                scheduleFactory.RegisterSchedule("EndOfWeek", _ => new Schedule(new EndOfWeekTrigger()));
+                scheduleFactory.RegisterSchedule("Daily", _ => new DailyTrigger());
+                scheduleFactory.RegisterSchedule("EndOfWeek", _ => new EndOfWeekTrigger());
                 scheduleFactory.RegisterSchedule("Weekly", parameters => {
-                    var p = parameters as EndOfWeekParameters;
-                    return new Schedule(new WeeklyTrigger(p.DayOfWeek));
+                    var p = parameters as WeeklyParameters;
+                    return new WeeklyTrigger(p.DayOfWeek);
                 });
+                
                 return scheduleFactory;
             });
             

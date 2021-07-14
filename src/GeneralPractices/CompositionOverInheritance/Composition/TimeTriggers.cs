@@ -9,16 +9,22 @@ namespace CompositionOverInheritance.Composition {
         public bool IsDue(DateTimeOffset activationDate) => throw new NotImplementedException();
     }
     
+    /*
+     * Can be a subclass of WeeklyTrigger
+     */
     public sealed class EndOfWeekTrigger : ITriggerTime {
-        public bool IsDue(DateTimeOffset activationDate) => throw new NotImplementedException();
+        public bool IsDue(DateTimeOffset activationDate) {
+            throw new NotImplementedException();
+        }
     }
-    
+
     public sealed class WeeklyTrigger : ITriggerTime {
         private readonly DayOfWeek dayOfWeek;
-
+        
         public WeeklyTrigger(DayOfWeek dayOfWeek) => this.dayOfWeek = dayOfWeek;
 
         public bool IsDue(DateTimeOffset activationDate) {
+            // use day of week
             throw new NotImplementedException();
         }
     }

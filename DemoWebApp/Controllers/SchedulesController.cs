@@ -1,6 +1,6 @@
 using CompositionOverInheritance.Composition;
-using FactoryPattern.Common;
-using FactoryPattern.DynamicFactories;
+using FactoryPattern.Factories;
+using FactoryPattern.Factories.FullyOpenClosed;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoWebApp.Controllers {
