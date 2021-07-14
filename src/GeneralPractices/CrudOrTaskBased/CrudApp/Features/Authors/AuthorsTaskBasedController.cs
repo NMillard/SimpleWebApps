@@ -11,25 +11,25 @@ namespace CrudApp.Features.Authors {
 
         public AuthorsTaskBasedController(AuthorRepository repository) => this.repository = repository;
 
-        [HttpPatch("{id:guid}/email")]
+        [HttpPatch("{id:guid}/ChangeEmail")]
         public async Task<ActionResult> ChangeEmail(Guid id, ChangeEmailModel model)
             => await UpdateAuthorProperty(id, author => author.Email = model.Email);
 
-        [HttpPatch("{id:guid}/bio")]
+        [HttpPatch("{id:guid}/UpdateBio")]
         public async Task<ActionResult> UpdateBio(Guid id, UpdateBioModel model)
             => await UpdateAuthorProperty(id, author => author.Bio = model.Bio);
 
-        [HttpPatch("{id:guid}/realName")]
+        [HttpPatch("{id:guid}/ChangeRealName")]
         public async Task<ActionResult> ChangeRealName(Guid id, ChangeRealName model)
             => await UpdateAuthorProperty(id, author => author.RealName = model.RealName);
 
-        [HttpPatch("{id:guid}/penName")]
-        public async Task<ActionResult> AddPenName(Guid id, AddOrRemovePenName model)
-            => await UpdateAuthorProperty(id, author => author.PenNames.Add(model.PenName));
+        [HttpPatch("{id:guid}/AddPenName/{penName:alpha}")]
+        public async Task<ActionResult> AddPenName(Guid id, string penName)
+            => await UpdateAuthorProperty(id, author => author.PenNames.Add(penName));
 
-        [HttpDelete("{id:guid}/penName")]
-        public async Task<ActionResult> RemovePenName(Guid id, AddOrRemovePenName model)
-            => await UpdateAuthorProperty(id, author => author.PenNames.Remove(model.PenName));
+        [HttpDelete("{id:guid}/RemovePenName/{penName:alpha}")]
+        public async Task<ActionResult> RemovePenName(Guid id, string penName)
+            => await UpdateAuthorProperty(id, author => author.PenNames.Remove(penName));
 
         private async Task<ActionResult> UpdateAuthorProperty(Guid id, Action<Author> action) {
             if (await repository.GetAsync(id) is not { } author) return BadRequest();
@@ -53,9 +53,5 @@ namespace CrudApp.Features.Authors {
 
     public record ChangeRealName {
         [MaxLength(150)] public string RealName { get; set; }
-    }
-
-    public record AddOrRemovePenName {
-        [MaxLength(150)] public string PenName { get; set; }
     }
 }
