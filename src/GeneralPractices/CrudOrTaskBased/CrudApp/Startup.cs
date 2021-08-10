@@ -1,5 +1,5 @@
-using System;
 using CrudApp.Features.Authors;
+using CrudApp.Features.Chat;
 using CrudApp.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,8 +22,9 @@ namespace CrudApp {
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "CrudApp", Version = "v1" }); });
 
-            services.AddScoped<AuthorRepository>();
-            services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            services.AddScoped<AuthorRepository>()
+                .AddScoped<ChatRepository>();
+            services.AddDbContext<AppDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("sql")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

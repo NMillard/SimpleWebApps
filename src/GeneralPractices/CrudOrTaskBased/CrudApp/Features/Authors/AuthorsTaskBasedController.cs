@@ -5,29 +5,29 @@ using CrudApp.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudApp.Features.Authors {
-    [Route("api/authors")]
+    [Route("api/authors/{id:guid}")]
     public class AuthorsTaskBasedController : ControllerBase {
         private readonly AuthorRepository repository;
 
         public AuthorsTaskBasedController(AuthorRepository repository) => this.repository = repository;
 
-        [HttpPatch("{id:guid}/ChangeEmail")]
+        [HttpPatch("ChangeEmail")]
         public async Task<ActionResult> ChangeEmail(Guid id, ChangeEmailModel model)
             => await UpdateAuthorProperty(id, author => author.Email = model.Email);
 
-        [HttpPatch("{id:guid}/UpdateBio")]
+        [HttpPatch("UpdateBio")]
         public async Task<ActionResult> UpdateBio(Guid id, UpdateBioModel model)
             => await UpdateAuthorProperty(id, author => author.Bio = model.Bio);
 
-        [HttpPatch("{id:guid}/ChangeRealName")]
+        [HttpPatch("ChangeRealName")]
         public async Task<ActionResult> ChangeRealName(Guid id, ChangeRealName model)
             => await UpdateAuthorProperty(id, author => author.RealName = model.RealName);
 
-        [HttpPatch("{id:guid}/AddPenName/{penName:alpha}")]
+        [HttpPatch("AddPenName/{penName:alpha}")]
         public async Task<ActionResult> AddPenName(Guid id, string penName)
             => await UpdateAuthorProperty(id, author => author.PenNames.Add(penName));
 
-        [HttpDelete("{id:guid}/RemovePenName/{penName:alpha}")]
+        [HttpDelete("RemovePenName/{penName:alpha}")]
         public async Task<ActionResult> RemovePenName(Guid id, string penName)
             => await UpdateAuthorProperty(id, author => author.PenNames.Remove(penName));
 
