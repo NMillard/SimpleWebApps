@@ -13,11 +13,8 @@ namespace BeginnerVsSenior.Senior {
             this.options = options;
         }
 
-        public async Task<bool> ExecuteAsync(string email) {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
-            // other relevant checks
-            
-            var user = new User(email);
+        public async Task<bool> ExecuteAsync(Username username) {
+            var user = new User(username);
             await SaveUser(user);
             await PublishMessage(user.Id);
             

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using CrudApp.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudApp.Features.Authors {
@@ -9,6 +10,23 @@ namespace CrudApp.Features.Authors {
     public class AuthorsCrudController : ControllerBase {
         private readonly AuthorRepository repository;
         public AuthorsCrudController(AuthorRepository repository) => this.repository = repository;
+
+        // GET api/authors/{id}
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id) => Ok(await repository.GetAsync(id));
+
+        // POST api/authors
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateAuthorModel model) {
+            var entity = new Author {
+                // map properties
+            };
+            bool savedSuccessfully = await repository.AddAsync(entity);
+
+            return savedSuccessfully
+                ? Created($"api/authors/{entity.Id}", new { AuthorId = entity.Id })
+                : BadRequest("Some error description");
+        }
 
         [HttpPatch("{id:guid}")]
         public async Task<ActionResult> Update(Guid id, UpdateAuthorModel model) {
@@ -54,6 +72,8 @@ namespace CrudApp.Features.Authors {
             return result ? Ok() : BadRequest();
         }
     }
+
+    public class CreateAuthorModel { }
 
     public class UpdateAuthorConditionally {
         public string PenName { get; set; }

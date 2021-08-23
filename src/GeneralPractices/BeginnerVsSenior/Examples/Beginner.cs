@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 
 namespace BeginnerVsSenior.Beginner {
-    public class CreateUserHandler {
+    public class UsersController {
         private readonly AppDbContext context;
         private readonly string serviceBusConnectionString;
         private readonly string topic;
 
-        public CreateUserHandler(AppDbContext context) {
+        public UsersController(AppDbContext context) {
             this.context = context;
 
             // Parameters required by the class should ideally be injected into the class, rather than
@@ -18,7 +18,7 @@ namespace BeginnerVsSenior.Beginner {
 
         }
 
-        public async Task<bool> ExecuteAsync(string email) {
+        public async Task<bool> CreateUser(string email) {
             var user = new User(email);
             await context.AddAsync(user);
             await context.SaveChangesAsync();
