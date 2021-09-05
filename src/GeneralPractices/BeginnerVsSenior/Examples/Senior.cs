@@ -17,7 +17,6 @@ namespace BeginnerVsSenior.Senior {
             var user = new User(username);
             await SaveUser(user);
             await PublishMessage(user.Id);
-            
             return true;
         }
 
