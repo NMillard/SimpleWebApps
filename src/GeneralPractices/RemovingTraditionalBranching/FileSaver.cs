@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RemovingTraditionalBranching.Traditional {
@@ -31,24 +30,36 @@ namespace RemovingTraditionalBranching.Traditional {
             this.savingOptions = savingOptions;
         }
 
-        public async Task<bool> StoreFile(string fileName, byte[] content, StorageOption option, string? folderName = null) {
+        public async ValueTask<bool> StoreFile(
+            string fileName,
+            byte[] content,
+            StorageOption option,
+            string? folderName = null) {
+            
             bool missingFolderName = option == StorageOption.FileSystem && string.IsNullOrEmpty(folderName);
             if (missingFolderName) return false;
             
             switch (option) {
                 case StorageOption.Database:
-                    bool saveSucceeded =  await repository.SaveAsync(fileName, content);
+                    bool saveSucceeded = await repository.SaveAsync(fileName, content);
                     return saveSucceeded;
                 case StorageOption.FileSystem:
                     string storagePath = Path.Combine(Directory.GetCurrentDirectory(), savingOptions.Path, folderName!);
-                    if (!Directory.Exists(storagePath)) Directory.CreateDirectory(storagePath);
+                    bool missingFolder = !Directory.Exists(storagePath);
+                    if (missingFolder) Directory.CreateDirectory(storagePath);
+
+                    FileStream file;
+                    try {
+                        file = File.Create(Path.Combine(storagePath, fileName));
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message); // or some other logging statement
+                        return false;
+                    }
                     
-                    FileStream file = File.Create(Path.Combine(storagePath, fileName));
                     await file.WriteAsync(content);
                     await file.FlushAsync();
-
                     file.Close();
-
+                    
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(option), option, null);
@@ -66,43 +77,24 @@ namespace RemovingTraditionalBranching.Traditional {
 namespace RemovingTraditionalBranching.Branchless {
 
     public class FileSaver {
-        private readonly Dictionary<Type, Func<IFileSink>> sinks;
+        private readonly Dictionary<Type, Func<object>> sinks;
 
-        public FileSaver() {
-            sinks = new Dictionary<Type, Func<IFileSink>>();
-        }
+        public FileSaver() => sinks = new Dictionary<Type, Func<object>>();
 
-        public async ValueTask<bool> StoreFile(FileContext context) {
-            sinks.TryGetValue(context.GetType(), out Func<IFileSink>? sinkCreator);
-            if (sinkCreator is null) throw new InvalidOperationException($"No sink exists for this context: {context.GetType().Name}");
+        public async ValueTask<bool> StoreFile<TContext>(TContext context) where TContext : FileContext {
+            bool sinkMissing = !sinks.TryGetValue(typeof(TContext), out Func<object>? sinkCreator);
+            if (sinkMissing) throw new InvalidOperationException($"No sink exists for this context: {context.GetType().Name}");
+            if (sinkCreator!.Invoke() is not FileSink<TContext> sink) throw new InvalidOperationException("Was not a sink");
 
-            return await sinkCreator().Store(context);
+            return await sink.Store(context);
         }
 
         public void RegisterSink<TFileContext>(Func<FileSink<TFileContext>> creator) where TFileContext : FileContext
             => sinks[typeof(TFileContext)] = creator;
     }
 
-    /// <summary>
-    /// Alternative approach to selecting the sink matching the context.
-    /// </summary>
-    public static class FileSinkExtensions {
-        public static ValueTask<bool> SaveFile(this IEnumerable<IFileSink> sinks, FileContext context) {
-            return sinks.SingleOrDefault(s => s.SupportedType == context.GetType())
-                ?.Store(context)?? throw new InvalidOperationException();
-        }
-    }
-
-    public interface IFileSink {
-        ValueTask<bool> Store(FileContext context);
-        Type SupportedType { get; }
-    }
-    
-    public abstract class FileSink<TFileContext> : IFileSink where TFileContext : FileContext {
-        public Type SupportedType => typeof(TFileContext);
-
-        public ValueTask<bool> Store(FileContext context) => Store((TFileContext) context);
-        protected abstract ValueTask<bool> Store(TFileContext context);
+    public abstract class FileSink<TFileContext> where TFileContext : FileContext {
+        public abstract ValueTask<bool> Store(TFileContext context);
     }
 
     public abstract record FileContext(byte[] Content, string FileName);
@@ -117,10 +109,7 @@ namespace RemovingTraditionalBranching.Branchless {
 
         public DatabaseSink(IFilesRepository repository) => this.repository = repository;
 
-        protected override async ValueTask<bool> Store(DatabaseFileContext context) {
-            bool result = await repository.SaveAsync(context.FileName, context.Content);
-            return result;
-        }
+        public override async ValueTask<bool> Store(DatabaseFileContext context) => await repository.SaveAsync(context.FileName, context.Content);
     }
 
     public class FileSystemSink : FileSink<FileSystemContext> {
@@ -128,13 +117,22 @@ namespace RemovingTraditionalBranching.Branchless {
 
         public FileSystemSink(FileSystemSavingOptions savingOptions) => this.savingOptions = savingOptions;
 
-        protected override async ValueTask<bool> Store(FileSystemContext context) {
-            string storagePath = Path.Combine(Directory.GetCurrentDirectory(), savingOptions.Path, context.FolderName);
-            if (!Directory.Exists(storagePath)) Directory.CreateDirectory(storagePath);
+        public override async ValueTask<bool> Store(FileSystemContext context) {
+            string storagePath = Path.Combine(Directory.GetCurrentDirectory(), savingOptions.Path, context.FolderName!);
+            bool missingFolder = !Directory.Exists(storagePath);
+            if (missingFolder) Directory.CreateDirectory(storagePath);
 
-            await using FileStream file = File.Create(Path.Combine(storagePath, context.FileName));
+            FileStream file;
+            try {
+                file = File.Create(Path.Combine(storagePath, context.FileName));
+            } catch (Exception e) {
+                Console.WriteLine(e.Message); // or some other logging statement
+                return false;
+            }
+            
             await file.WriteAsync(context.Content);
             await file.FlushAsync();
+            file.Close();
 
             return true;
         }
@@ -145,6 +143,13 @@ namespace RemovingTraditionalBranching.Branchless {
 namespace RemovingTraditionalBranching {
     public interface IFilesRepository {
         Task<bool> SaveAsync(string fileName, byte[] content);
+    }
+
+    public class FakeFileRepository : IFilesRepository {
+        public Task<bool> SaveAsync(string fileName, byte[] content) {
+            Console.WriteLine($"Storing {fileName} containing {content.Length} bytes");
+            return Task.FromResult(true);
+        }
     }
 
     public class FileSystemSavingOptions {

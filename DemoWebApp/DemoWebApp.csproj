@@ -19,8 +19,4 @@
       <ProjectReference Include="..\src\GeneralPractices\RemovingTraditionalBranching\RemovingTraditionalBranching.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="files-test\traditional" />
-    </ItemGroup>
-
 </Project>
