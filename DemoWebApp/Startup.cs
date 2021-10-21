@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CompositionOverInheritance.Composition;
+using DelegatingConfiguration;
 using FactoryPattern.Factories;
 using FactoryPattern.Factories.FullyOpenClosed;
 using Microsoft.AspNetCore.Builder;
@@ -60,6 +61,18 @@ namespace DemoWebApp {
                 return fileSaver;
             });
             services.AddTransient<RemovingTraditionalBranching.Traditional.FileSaver>();
+
+            Configuration.BindSimpleSettings(out SomeSettings settings);
+            services
+                .AddSingleton(settings)
+                .AddConfiguredSettings<SomeSettings>(Configuration)
+                .AddSomeService(otherSettings => {
+                    otherSettings.DefaultFilePath = Configuration["OtherSettings:DefaultFilePath"];
+                })
+                .AddConfiguration(() => {
+                    Configuration.BindSimpleSettings(out SomeSettings someSettings);
+                    return someSettings;
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
