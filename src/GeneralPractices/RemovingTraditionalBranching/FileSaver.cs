@@ -17,7 +17,9 @@ using System.IO;
 using System.Threading.Tasks;
 
 namespace RemovingTraditionalBranching.Traditional {
+
     public class FileSaver {
+        private readonly IBlobStorage blobStorage;
         private readonly IFilesRepository repository;
         private readonly FileSystemSavingOptions savingOptions;
 
@@ -28,6 +30,10 @@ namespace RemovingTraditionalBranching.Traditional {
         public FileSaver(IFilesRepository repository, FileSystemSavingOptions savingOptions) {
             this.repository = repository;
             this.savingOptions = savingOptions;
+        }
+        
+        public FileSaver(IFilesRepository repository, FileSystemSavingOptions savingOptions, IBlobStorage blobStorage) : this(repository, savingOptions) {
+            this.blobStorage = blobStorage;
         }
 
         public async ValueTask<bool> StoreFile(
@@ -70,7 +76,46 @@ namespace RemovingTraditionalBranching.Traditional {
     public enum StorageOption {
         Database,
         FileSystem,
+        BlobStorage
     }
+
+    public interface IBlobStorage { // for when illustrating creating a new branch
+        Task<bool> StoreAsync(string fileName, byte[] content);
+    } 
+
+    public class PolymorphicFileSaver {
+        private readonly IFilesRepository repository;
+        private readonly FileSystemSavingOptions savingOptions;
+        private readonly IBlobStorage blobStorage;
+
+        public PolymorphicFileSaver(IFilesRepository repository, FileSystemSavingOptions savingOptions, IBlobStorage blobStorage) {
+            this.repository = repository;
+            this.savingOptions = savingOptions;
+            this.blobStorage = blobStorage;
+        }
+        
+        public async ValueTask<bool> StoreFile(DatabaseContext context) {
+            bool saveSucceeded = await repository.SaveAsync(context.FileName, context.Content);
+            return saveSucceeded;
+        }
+
+        public async ValueTask<bool> StoreFile(FileSystemContext context) {
+            try {
+                // do some file stuff using FileSystemContext
+                return true;
+            } catch (Exception e) {
+                Console.WriteLine(e); // or some other logging statement
+                return false;
+            }
+        }
+        
+        // omitted blob storage method
+    }
+
+
+    public record FileSystemContext(string FileName, byte[] Content, string FolderName);
+
+    public record DatabaseContext(string FileName, byte[] Content);
 }
 
 
