@@ -16,11 +16,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\src\DesignPatterns\FactoryPattern\FactoryPattern.csproj" />
+      <ProjectReference Include="..\src\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
       <ProjectReference Include="..\src\GeneralPractices\RemovingTraditionalBranching\RemovingTraditionalBranching.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="files-test\traditional" />
     </ItemGroup>
 
 </Project>

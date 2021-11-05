@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using CompositionOverInheritance.Composition;
-using DemoWebApp.Repositories;
+using DelegatingConfiguration;
 using FactoryPattern.Factories;
 using FactoryPattern.Factories.FullyOpenClosed;
 using Microsoft.AspNetCore.Builder;
@@ -45,12 +45,34 @@ namespace DemoWebApp {
 
             services.AddSingleton<FileSystemSavingOptions>();
             services.AddTransient<IFilesRepository, FakeFileRepository>();
+            // services.TryAddEnumerable(new List<ServiceDescriptor> {
+            //     new(typeof(IFileSink), typeof(DatabaseSink), ServiceLifetime.Transient),
+            //     new(typeof(IFileSink), typeof(FileSystemSink), ServiceLifetime.Transient),
+            // });
+            
             services.TryAddEnumerable(new List<ServiceDescriptor> {
-                new(typeof(IFileSink), typeof(DatabaseSink), ServiceLifetime.Transient),
-                new(typeof(IFileSink), typeof(FileSystemSink), ServiceLifetime.Transient),
+                new (typeof(FileSink<FileSystemContext>), typeof(FileSystemSink), ServiceLifetime.Scoped),
+                new (typeof(FileSink<DatabaseFileContext>), typeof(DatabaseSink), ServiceLifetime.Scoped),
             });
-            services.AddTransient<RemovingTraditionalBranching.Branchless.FileSaver>();
+            services.AddTransient<RemovingTraditionalBranching.Branchless.FileSaver>(provider => {
+                var fileSaver = new RemovingTraditionalBranching.Branchless.FileSaver();
+                fileSaver.RegisterSink(provider.GetRequiredService<FileSink<FileSystemContext>>);
+                fileSaver.RegisterSink(provider.GetRequiredService<FileSink<DatabaseFileContext>>);
+                return fileSaver;
+            });
             services.AddTransient<RemovingTraditionalBranching.Traditional.FileSaver>();
+
+            Configuration.BindSimpleSettings(out SomeSettings settings);
+            services
+                .AddSingleton(settings)
+                .AddConfiguredSettings<SomeSettings>(Configuration)
+                .AddSomeService(otherSettings => {
+                    otherSettings.DefaultFilePath = Configuration["OtherSettings:DefaultFilePath"];
+                })
+                .AddConfiguration(() => {
+                    Configuration.BindSimpleSettings(out SomeSettings someSettings);
+                    return someSettings;
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

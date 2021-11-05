@@ -1,15 +1,23 @@
 ﻿using System;
+using DelegatingConfiguration;
+using Microsoft.Extensions.Configuration;
+
 /* 1. Rename daily schedule to Schedule
  * 2. Let it take ITriggerTime in constructor
  * 3. Implement triggers (Daily, EndOfWeek, => Weekly) - make Something2(Schedule)
  * 4. show how clients use it
  */
 
-ScheduleBase dailySchedule = new DailySchedule();
-ScheduleBase eowSchedule = new EndOfWeekSchedule();
-ScheduleBase weeklySchedule = new WeeklySchedule(DayOfWeek.Friday);
 
-Schedule schedule = new Schedule(new WeeklyTrigger(DayOfWeek.Friday));
+var config = new ConfigurationBuilder().Build();
+config.BindSimpleSettings(out SomeSettings settings);
+
+
+ScheduleBase dailySchedule = new DailySchedule(new TimeOnly(11, 0));
+ScheduleBase eowSchedule = new EndOfWeekSchedule(new TimeOnly(11, 0));
+ScheduleBase weeklySchedule = new WeeklySchedule(new TimeOnly(11, 0), DayOfWeek.Friday);
+
+Schedule schedule = new Schedule(new TimeOnly(11, 0), new WeeklyTrigger(DayOfWeek.Friday));
 Something2(schedule);
 
 Something(weeklySchedule);
@@ -23,128 +31,69 @@ static void Something2(Schedule schedule) {
 }
 
 public class Schedule {
+    private readonly TimeOnly time;
     private readonly ITriggerTime triggerTime;
-    private readonly DateTimeOffset created;
 
-    public Schedule(ITriggerTime triggerTime) {
+    public Schedule(TimeOnly time, ITriggerTime triggerTime) {
+        this.time = time;
         this.triggerTime = triggerTime;
-        created = DateTimeOffset.UtcNow;
     }
 
-    public bool IsDue() => triggerTime.IsDue(created);
+    public bool IsDue() => triggerTime.IsDue(time);
 }
 
 public interface ITriggerTime {
-    bool IsDue(DateTimeOffset activationDate);
+    bool IsDue(TimeOnly time);
 }
 
 public class DailyTrigger : ITriggerTime {
-    public bool IsDue(DateTimeOffset activationDate) {
-        throw new NotImplementedException();
-    }
+    public bool IsDue(TimeOnly time) => throw new NotImplementedException();
+}
+
+public class WeeklyTrigger : ITriggerTime {
+    private readonly DayOfWeek dayOfWeek;
+
+    public WeeklyTrigger(DayOfWeek dayOfWeek) => this.dayOfWeek = dayOfWeek;
+
+    public bool IsDue(TimeOnly time) => throw new NotImplementedException();
 }
 
 public class EndOfWeekTrigger : WeeklyTrigger {
     public EndOfWeekTrigger() : base(DayOfWeek.Sunday) { }
  }
 
-public class WeeklyTrigger : ITriggerTime {
-    private readonly DayOfWeek dayOfWeek;
-
-    public WeeklyTrigger(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-    
-    public bool IsDue(DateTimeOffset activactionDate) {
-        throw new NotImplementedException();
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 public abstract class ScheduleBase {
-    protected readonly DateTimeOffset created;
-
-    public virtual bool IsDue() {
-        // do important work
-        throw new NotImplementedException();
+    protected readonly TimeOnly TriggerTime;
+    
+    protected ScheduleBase(TimeOnly triggerTime) {
+        this.TriggerTime = triggerTime;
     }
+
+    public abstract bool IsDue();
 }
 
-public class DailySchedule : ScheduleBase{
-    public override bool IsDue() {
-        throw new NotImplementedException();
-    }
-}
+public class DailySchedule : ScheduleBase {
+    public DailySchedule(TimeOnly triggerTime) : base(triggerTime) { }
 
-public class EndOfWeekSchedule : ScheduleBase {
-    public override bool IsDue() { 
-        throw new NotImplementedException();
-    }
+    public override bool IsDue() => true;
 }
 
 public class WeeklySchedule : ScheduleBase {
     private readonly DayOfWeek dayOfWeek;
 
-    public WeeklySchedule(DayOfWeek dayOfWeek) {
+    public WeeklySchedule(TimeOnly triggerTime, DayOfWeek dayOfWeek) : base(triggerTime) {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public override bool IsDue() {
-        throw new NotImplementedException();
-    }
+    public override bool IsDue() => true;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+public class EndOfWeekSchedule : ScheduleBase {
+    public EndOfWeekSchedule(TimeOnly triggerTime) : base(triggerTime) { }
+    
+    public override bool IsDue() => true;
+}
 
 
 #region factory
@@ -174,3 +123,29 @@ public class WeeklySchedule : ScheduleBase {
 // }
 
 #endregion
+
+namespace Beginners {
+    
+    public class BeginnerSchedule {
+        private readonly DateTimeOffset triggerTime;
+        private readonly ScheduleType type;
+
+        public BeginnerSchedule(DateTimeOffset triggerTime, ScheduleType type) {
+            this.triggerTime = triggerTime;
+            this.type = type;
+        }
+
+        public bool IsDue() => type switch {
+            ScheduleType.Daily => throw new NotImplementedException(),
+            ScheduleType.Weekly => throw new NotImplementedException(),
+            ScheduleType.EndOfWeek => throw new NotImplementedException(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    public enum ScheduleType {
+        Daily,
+        Weekly,
+        EndOfWeek,
+    }
+}
