@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Plugin.CountriesModule;
-using Plugin.Domain;
-using Plugin.Domain.Abstractions;
-using Plugin.Module;
-using Plugin.WeatherModule;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 IServiceCollection serviceCollection = new ServiceCollection();
 
