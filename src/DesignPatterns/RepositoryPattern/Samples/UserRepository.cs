@@ -1,7 +1,4 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
 
 namespace RepositoryPattern.Samples {
