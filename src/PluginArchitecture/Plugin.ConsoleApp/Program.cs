@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Plugin.CountriesModule;
 using Plugin.Domain;
 using Plugin.Domain.Abstractions;
@@ -6,6 +9,8 @@ using Plugin.Module;
 using Plugin.WeatherModule;
 
 IServiceCollection serviceCollection = new ServiceCollection();
+
+Dynamic(serviceCollection);
 
 void Dynamic(IServiceCollection services) {
     ModuleLoader.Load(services);
@@ -23,7 +28,7 @@ void Dynamic(IServiceCollection services) {
         foreach (string availableCommand in availableCommands) Console.WriteLine($"\t{availableCommand}");
         return;
     }
-
+    
     IAction? action = actions.PickAction(args[0]);
     if (action is null) {
         Console.WriteLine($"{args[0]} is not a valid command...");

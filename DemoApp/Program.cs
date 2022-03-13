@@ -2,13 +2,6 @@
 using DelegatingConfiguration;
 using Microsoft.Extensions.Configuration;
 
-/* 1. Rename daily schedule to Schedule
- * 2. Let it take ITriggerTime in constructor
- * 3. Implement triggers (Daily, EndOfWeek, => Weekly) - make Something2(Schedule)
- * 4. show how clients use it
- */
-
-
 var config = new ConfigurationBuilder().Build();
 config.BindSimpleSettings(out SomeSettings settings);
 
