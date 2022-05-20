@@ -6,7 +6,7 @@ using RemovingTraditionalBranching.Traditional;
 using Xunit;
 
 namespace RemovingTraditionalBranching.Tests {
-    public class Traditional {
+    public class TraditionalTests {
 
         [Theory]
         [InlineData(true)]

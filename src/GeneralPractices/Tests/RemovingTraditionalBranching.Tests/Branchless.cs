@@ -4,7 +4,7 @@ using RemovingTraditionalBranching.Branchless;
 using Xunit;
 
 namespace RemovingTraditionalBranching.Tests {
-    public class UnitTest1 {
+    public class BranchlessTests {
         [Fact]
         public async Task Test1() {
             var sut = new FileSaver();
