@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Update="Keys/**" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.11.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
         <PackageReference Include="Moq" Version="4.16.1" />
@@ -24,6 +28,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TokenGeneratorWebApi\TokenGeneratorWebApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Keys" />
+      <Folder Include="Keys\client" />
     </ItemGroup>
 
 </Project>

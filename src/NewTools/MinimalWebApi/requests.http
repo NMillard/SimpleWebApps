@@ -1,0 +1,18 @@
+POST https://localhost:5001/api/customers/RegisterNew
+Content-Type: application/json
+
+{
+  "name": "niiicklas"
+}
+
+###
+GET https://localhost:5001/Customer
+Accept: application/json
+
+###
+
+GET https://localhost:5001/api/customers
+Accept: application/json
+
+###
+

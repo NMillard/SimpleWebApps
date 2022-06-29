@@ -4,7 +4,6 @@
 
 # User-specific stuff
 .idea
-appsettings.json
 appsettings.Development.json
 
 # Gradle and Maven with auto-import

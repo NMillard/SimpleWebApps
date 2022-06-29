@@ -1,6 +1,8 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Xunit;
@@ -20,6 +22,7 @@ namespace Token.Tests {
             privateParameters = rsa.ExportParameters(true);
             publicParameters = rsa.ExportParameters(false);
         }
+        
         
         [Fact]
         public void PrivateAndPublicKeys() {
@@ -126,6 +129,55 @@ namespace Token.Tests {
                 ValidateLifetime = false,
                 ValidateIssuerSigningKey = true
             }, out var s);
+        }
+        
+        /// <summary>
+        /// Other security stuff...
+        /// 
+        /// Generate a set of private and public keys.
+        ///
+        /// 1. Generate the private key
+        /// openssl genrsa -out private.key 1024
+        /// 
+        /// 2. Derive public key from the private one
+        /// openssl rsa -in private.key -out public.key -pubout -outform PEM
+        ///
+        /// 3. Generate root Certificate Authority (CA)
+        /// openssl req -x509 -sha256 -new -nodes -key private.key -days 3650 -out ca.crt
+        ///
+        /// Private key and Certificate Signing Request (CSR) can be created together using
+        /// openssl req -out server.csr -new -newkey rsa:2048 -nodes -keyout private.key
+        /// or later using an existing private key using:
+        /// openssl req -new -out server.csr -key private.key
+        ///
+        /// Create client certificate using the same command as above to create client private key and CSR, and then
+        /// run the command below:
+        /// openssl x509 -req -in client.csr -out client.crt -CA ca.crt -CAKey server-private.key -set_serial 01 -days 3650
+        ///
+        /// You can create pfx from the private key and certificate like this:
+        /// openssl pkcs12 -inkey private.key -in ca.crt -export -out server.pfx -passout pass:word
+        /// </summary>
+        [Fact]
+        public void testName() {
+            string @private = File.OpenText("Keys/private.key").ReadToEnd();
+            string @public = File.OpenText("Keys/public.key").ReadToEnd();
+            
+            using var privateKey = RSA.Create();
+            privateKey.ImportFromPem(new ReadOnlySpan<char>(@private.ToCharArray()));
+            
+            using var publicKey = RSA.Create();
+            publicKey.ImportFromPem(@public.ToCharArray());
+
+            const string message = "Hello there";
+            byte[] signature = privateKey.SignData(Encoding.UTF8.GetBytes(message), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            testOutputHelper.WriteLine(Encoding.UTF8.GetString(signature));
+
+            bool verified = publicKey.VerifyData(Encoding.UTF8.GetBytes(message), signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            
+            byte[] cipher = publicKey.Encrypt(Encoding.UTF8.GetBytes(message), RSAEncryptionPadding.Pkcs1);
+            byte[] plain = privateKey.Decrypt(cipher, RSAEncryptionPadding.Pkcs1);
+            
+            testOutputHelper.WriteLine(Encoding.UTF8.GetString(plain));
         }
     }
 }
