@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -87,7 +89,7 @@ public class UnitTest1 {
     
     [Fact]
     public async Task ParseJsonFromZippedFile() {
-        await using FileStream file = File.OpenRead("files/large-file.zip");
+        await using FileStream file = File.OpenRead("files/data.zip");
         using var zipArchive = new ZipArchive(file);
 
         var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
@@ -96,7 +98,17 @@ public class UnitTest1 {
 
             IAsyncEnumerable<JsonNode?> enumerable = JsonSerializer.DeserializeAsyncEnumerable<JsonNode>(entryStream, options);
             await foreach (JsonNode? obj in enumerable) { 
-                var e = obj?["id"]?.ToString();
+                // Read single property
+                var id = obj?["id"]?.ToString();
+                
+                // Parse whole object
+                var employee = obj.Deserialize<Employee>(options);
+
+                // Parse only subset of the object
+                JsonNode? addressNode = obj?["address"];
+                if (addressNode is null) continue;
+                
+                var address = addressNode.Deserialize<Address>(options);
             }
         }
     }
@@ -107,28 +119,6 @@ public class UnitTest1 {
         Stream response = await client.GetStreamAsync("https://localhost:7136/FileStream");
 
         var zipArchive = new ZipArchive(response);
-        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        foreach (ZipArchiveEntry zipEntry in zipArchive.Entries) {
-            await using Stream entryStream = zipEntry.Open();
-
-            IAsyncEnumerable<JsonNode?> enumerable = JsonSerializer.DeserializeAsyncEnumerable<JsonNode>(entryStream, options);
-            await foreach (JsonNode? obj in enumerable) { 
-                testOutputHelper.WriteLine(obj?["id"]?.ToString());
-            }
-        }
-    }
-    
-    [Fact]
-    public async Task ParseJsonFromZippedFileOverSftp() {
-        var key = new PrivateKeyAuthenticationMethod("user", new PrivateKeyFile("C:/Users/Millard/.ssh/id_ed25519"));
-        var info = new ConnectionInfo("localhost", 2222, "user", key);
-
-        using var client = new SftpClient(info);
-        client.Connect();
-
-        await using Stream stream = client.Open("/upload/large-file.zip", FileMode.Open);
-        
-        var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
         var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         foreach (ZipArchiveEntry zipEntry in zipArchive.Entries) {
             await using Stream entryStream = zipEntry.Open();

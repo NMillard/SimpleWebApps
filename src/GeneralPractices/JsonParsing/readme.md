@@ -24,7 +24,7 @@ Note that I'm not covering the simple case of deserializing a json string into a
 
 Anyway, say we have the following JSON in a regular `.json` file.  
 
-````json
+```json5
 // data.json file
 [
   {
@@ -48,10 +48,10 @@ Anyway, say we have the following JSON in a regular `.json` file.
       "city": "København"
     },
     "emergencyPhoneNumbers": []
-  }
+  },
   ...
 ]
-````
+```
 
 When you want to read this, as a stream, you just open the file to get a `FileStream` and then pass this stream to `JsonDocument`, or a `JsonNode` and use their respective `Parse(stream)` methods.
 
