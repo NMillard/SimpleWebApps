@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "Integrations.RabbitMQ.Producer": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
