@@ -1,0 +1,2 @@
+﻿POST https://localhost:7057/api/Messages/CreateMessage
+Content-Type: application/json
