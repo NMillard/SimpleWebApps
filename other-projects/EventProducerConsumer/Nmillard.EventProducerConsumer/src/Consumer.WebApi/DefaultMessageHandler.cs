@@ -2,12 +2,7 @@
 
 namespace Consumer.WebApi;
 
-public class DefaultMessage
-{
-    public Guid CorrelationId { get; set; }
-}
-
-public class DefaultMessageHandler : MessageHandler<DefaultMessage>
+internal class DefaultMessageHandler : MessageHandler<DefaultMessage>
 {
     private readonly ILogger<DefaultMessageHandler> logger;
 
@@ -19,10 +14,13 @@ public class DefaultMessageHandler : MessageHandler<DefaultMessage>
         QueueName = "default-message-logger";
     }
     
-    public override Task OnMessageReceived(DefaultMessage message)
+    public override async Task OnMessageReceivedAsync(DefaultMessage message)
     {
         logger.LogInformation("Received message with correlation id {CorrelationId}", message.CorrelationId.ToString());
-        
-        return Task.CompletedTask;
     }
+}
+
+public class DefaultMessage
+{
+    public Guid CorrelationId { get; set; }
 }

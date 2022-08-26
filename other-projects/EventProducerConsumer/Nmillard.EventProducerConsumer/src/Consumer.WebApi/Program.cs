@@ -8,5 +8,6 @@ builder.Services.AddMessageConsumer<DefaultMessageHandler, DefaultMessage>("loca
 
 WebApplication app = builder.Build();
 
+app.UseHttpsRedirection();
 
 app.Run();
