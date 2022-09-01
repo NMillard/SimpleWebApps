@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prototyping", "prototyping", "{3BC5B87F-D873-41B2-AF3B-97C727FA12D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reconstitution.Prototyping", "prototyping\Reconstitution.Prototyping\Reconstitution.Prototyping.csproj", "{363AA4CF-8837-4075-B690-54C9A706857C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reconstitution.Demo", "src\Reconstitution.Demo\Reconstitution.Demo.csproj", "{43DCD27C-99F2-46E2-AB03-D85526F00C11}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{363AA4CF-8837-4075-B690-54C9A706857C} = {3BC5B87F-D873-41B2-AF3B-97C727FA12D8}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{363AA4CF-8837-4075-B690-54C9A706857C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{363AA4CF-8837-4075-B690-54C9A706857C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{363AA4CF-8837-4075-B690-54C9A706857C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{363AA4CF-8837-4075-B690-54C9A706857C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43DCD27C-99F2-46E2-AB03-D85526F00C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43DCD27C-99F2-46E2-AB03-D85526F00C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43DCD27C-99F2-46E2-AB03-D85526F00C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43DCD27C-99F2-46E2-AB03-D85526F00C11}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
