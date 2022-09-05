@@ -38,8 +38,8 @@ namespace Reconstitution.Demo.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublishDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
@@ -47,8 +47,8 @@ namespace Reconstitution.Demo.Migrations
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_Users_AuthorId",
-                        column: x => x.AuthorId,
+                        name: "FK_Posts_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -80,9 +80,9 @@ namespace Reconstitution.Demo.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_AuthorId",
+                name: "IX_Posts_UserId",
                 table: "Posts",
-                column: "AuthorId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_ClaimId",
