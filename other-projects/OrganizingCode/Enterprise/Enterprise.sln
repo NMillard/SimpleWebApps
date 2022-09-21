@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{19F06420-F480-44BE-A588-5C3D3CB2B4D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Repositories", "src\Infrastructure.Repositories\Infrastructure.Repositories.csproj", "{C1CB4122-CD7A-48CA-8490-EAA55103D2D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{74D5F245-28AD-4355-A69D-6F3A8C21DC13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{D81BA8F0-BE08-4AE4-BEC0-D8584CCA1B33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tests", "tests\Domain.Tests\Domain.Tests.csproj", "{4485C0C4-0055-41ED-873E-DD3CE48ECADA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDFE3BB6-1798-472E-B225-9423E0F4C8AE}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+		Dockerfile = Dockerfile
+		readme.md = readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CE86AB44-3625-426D-9E5F-3F880B9B6A87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19F06420-F480-44BE-A588-5C3D3CB2B4D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19F06420-F480-44BE-A588-5C3D3CB2B4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19F06420-F480-44BE-A588-5C3D3CB2B4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19F06420-F480-44BE-A588-5C3D3CB2B4D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1CB4122-CD7A-48CA-8490-EAA55103D2D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1CB4122-CD7A-48CA-8490-EAA55103D2D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1CB4122-CD7A-48CA-8490-EAA55103D2D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1CB4122-CD7A-48CA-8490-EAA55103D2D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74D5F245-28AD-4355-A69D-6F3A8C21DC13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74D5F245-28AD-4355-A69D-6F3A8C21DC13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74D5F245-28AD-4355-A69D-6F3A8C21DC13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74D5F245-28AD-4355-A69D-6F3A8C21DC13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D81BA8F0-BE08-4AE4-BEC0-D8584CCA1B33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81BA8F0-BE08-4AE4-BEC0-D8584CCA1B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81BA8F0-BE08-4AE4-BEC0-D8584CCA1B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81BA8F0-BE08-4AE4-BEC0-D8584CCA1B33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4485C0C4-0055-41ED-873E-DD3CE48ECADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4485C0C4-0055-41ED-873E-DD3CE48ECADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4485C0C4-0055-41ED-873E-DD3CE48ECADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4485C0C4-0055-41ED-873E-DD3CE48ECADA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4485C0C4-0055-41ED-873E-DD3CE48ECADA} = {CE86AB44-3625-426D-9E5F-3F880B9B6A87}
+	EndGlobalSection
+EndGlobal
