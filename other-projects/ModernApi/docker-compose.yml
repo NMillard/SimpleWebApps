@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
+    hostname: azurite
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - "./certs:/certs"
+#    entrypoint: "azurite --oauth basic --cert /certs/cert.pfx --pwd docker"
