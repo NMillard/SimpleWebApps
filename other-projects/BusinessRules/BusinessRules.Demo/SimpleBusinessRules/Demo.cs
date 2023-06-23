@@ -33,13 +33,12 @@ public record Username
     {
         bool valid = value switch
         {
-            "" => false,
+            "" or null => false,
             { Length: > 50 } => false,
             { Length: < 3 } => false,
+            _ when !value.Any(char.IsLetterOrDigit) => false,
             _ => true
         };
-
-        if (!value.Any(char.IsLetterOrDigit)) throw new ArgumentException();
 
         if (!valid) throw new ArgumentException();
         

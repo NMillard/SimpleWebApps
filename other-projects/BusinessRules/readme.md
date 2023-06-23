@@ -23,10 +23,10 @@ A new requirement pops up. The business wants a small additional addition.
 
 Usernames must now:
 
-5. cannot contain special characters. Only alphanumeric characters are allowed.
+4. cannot contain special characters. Only alphanumeric characters are allowed.
 
 Some time goes by, say, a few years. The business is thriving and usernames have sort of become a commodity, that may
-generate a few extra bucks to the business.  
+generate a few extra bucks to the business.
 
 So, the business decides that it wants to offer premium usernames, that can contain special characters, and by the way,
 the business now also wants to make minimum and maximum lengths configurable - without having to recompile or restart

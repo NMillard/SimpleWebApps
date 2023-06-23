@@ -9,10 +9,10 @@ public class Demo
     public void First(string value, bool expected)
     {
         var repository = new InMemoryUsernameConfigurationRepository();
-        var usernamePolicies = new List<IUsernamePolicy>
+        var usernamePolicies = new List<IUsernameRule>
         {
-            new MaxLengthPolicy(repository),
-            new MinLengthPolicy(repository),
+            new MaxLengthRule(repository),
+            new MinLengthRule(repository),
             new OnlyAlphanumericCharacters()
         };
 
@@ -28,9 +28,9 @@ public class Demo
     public void Second(string value, bool expected)
     {
         ServiceProvider services = new ServiceCollection()
-            .AddScoped<IUsernamePolicy, MaxLengthPolicy>()
-            .AddScoped<IUsernamePolicy, MinLengthPolicy>()
-            .AddScoped<IUsernamePolicy, OnlyAlphanumericCharacters>()
+            .AddScoped<IUsernameRule, MaxLengthRule>()
+            .AddScoped<IUsernameRule, MinLengthRule>()
+            .AddScoped<IUsernameRule, OnlyAlphanumericCharacters>()
             .AddScoped<UsernameEvaluator>()
             .AddScoped<IUsernameConfigurationRepository, InMemoryUsernameConfigurationRepository>()
             .BuildServiceProvider();
@@ -62,14 +62,14 @@ public record Username(string Value);
 public class UsernameEvaluator
 {
     public UsernameEvaluator(
-        IEnumerable<IUsernamePolicy> policies,
+        IEnumerable<IUsernameRule> rules,
         IUsernameConfigurationRepository repository)
     {
-        this.policies = policies;
+        this.rules = rules;
         this.repository = repository;
     }
 
-    private readonly IEnumerable<IUsernamePolicy> policies;
+    private readonly IEnumerable<IUsernameRule> rules;
     private readonly IUsernameConfigurationRepository repository;
 
     public bool Evaluate(Username username)
@@ -80,56 +80,56 @@ public class UsernameEvaluator
             .Where(uc => uc.IsActive)
             .ToList();
 
-        List<IUsernamePolicy> activePolicies = policies
+        List<IUsernameRule> activeRules = rules
             .Where(p => configurations.Any(uc => uc.Key.Equals(p.GetType().Name) && uc.IsActive))
             .ToList();
 
-        return activePolicies.All(p => p.Evaluate(username));
+        return activeRules.All(p => p.Evaluate(username));
     }
 }
 
-public interface IUsernamePolicy
+public interface IUsernameRule
 {
     bool Evaluate(Username username);
 }
 
-public class MaxLengthPolicy : IUsernamePolicy
+public class MaxLengthRule : IUsernameRule
 {
     private readonly IUsernameConfigurationRepository repository;
 
-    public MaxLengthPolicy(IUsernameConfigurationRepository repository)
+    public MaxLengthRule(IUsernameConfigurationRepository repository)
     {
         this.repository = repository;
     }
 
     public bool Evaluate(Username username)
     {
-        UsernameConfiguration? config = repository.GetByName(nameof(MaxLengthPolicy));
+        UsernameConfiguration? config = repository.GetByName(nameof(MaxLengthRule));
         int maxLength = config?.Value as int? ?? 50;
 
         return username.Value.Length <= maxLength;
     }
 }
 
-public class MinLengthPolicy : IUsernamePolicy
+public class MinLengthRule : IUsernameRule
 {
     private readonly IUsernameConfigurationRepository repository;
 
-    public MinLengthPolicy(IUsernameConfigurationRepository repository)
+    public MinLengthRule(IUsernameConfigurationRepository repository)
     {
         this.repository = repository;
     }
 
     public bool Evaluate(Username username)
     {
-        UsernameConfiguration? config = repository.GetByName(nameof(MinLengthPolicy));
+        UsernameConfiguration? config = repository.GetByName(nameof(MinLengthRule));
         int minLength = config?.Value as int? ?? 3;
 
         return username.Value.Length >= minLength;
     }
 }
 
-public class OnlyAlphanumericCharacters : IUsernamePolicy
+public class OnlyAlphanumericCharacters : IUsernameRule
 {
     public bool Evaluate(Username username)
     {
