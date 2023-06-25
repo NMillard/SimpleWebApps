@@ -34,6 +34,9 @@ the application.
 
 Actually, the business wants to have the option to switch the business rules off and on as they please.
 
+The company receives complaints that some users are having inappropriate usernames. The business now wants to add a rule
+specifying that usernames cannot contain profanity.
+
 ## Building flexibility
 
 Every business rule and policy should be its own class, that is easily debugged, swapped, replaced, turned on and off.
