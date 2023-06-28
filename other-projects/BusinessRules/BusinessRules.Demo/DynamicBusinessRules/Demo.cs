@@ -11,8 +11,8 @@ public class Demo
         var repository = new InMemoryUsernameConfigurationRepository();
         var usernamePolicies = new List<IUsernameRule>
         {
-            new MaxLengthRule(repository),
-            new MinLengthRule(repository),
+            new MaxLengthRule(),
+            new MinLengthRule(),
             new OnlyAlphanumericCharacters()
         };
 
@@ -81,60 +81,54 @@ public class UsernameEvaluator
             .ToList();
 
         List<IUsernameRule> activeRules = rules
-            .Where(p => configurations.Any(uc => uc.Key.Equals(p.GetType().Name) && uc.IsActive))
+            .Where(p => configurations.Any(c => c.Key.Equals(p.GetType().Name) && c.IsActive))
             .ToList();
 
-        return activeRules.All(p => p.Evaluate(username));
+        return activeRules.All(p =>
+        {
+            UsernameConfiguration? config = repository.GetByName(p.GetType().Name);
+            return p.Evaluate(username, new RuleContext { Parameters = config?.Parameters });
+        });
     }
 }
+
+public class RuleContext
+{
+    public bool IsPremium { get; set; }
+    public object? Parameters { get; set; }
+}
+
 
 public interface IUsernameRule
 {
-    bool Evaluate(Username username);
+    bool Evaluate(Username username, RuleContext context);
 }
+
 
 public class MaxLengthRule : IUsernameRule
 {
-    private readonly IUsernameConfigurationRepository repository;
-
-    public MaxLengthRule(IUsernameConfigurationRepository repository)
+    public bool Evaluate(Username username, RuleContext context)
     {
-        this.repository = repository;
-    }
-
-    public bool Evaluate(Username username)
-    {
-        UsernameConfiguration? config = repository.GetByName(nameof(MaxLengthRule));
-        int maxLength = config?.Value as int? ?? 50;
-
-        return username.Value.Length <= maxLength;
+        if (context.Parameters is not LengthParameters parameters) return false;
+        
+        return username.Value.Length <= parameters.Length;
     }
 }
 
 public class MinLengthRule : IUsernameRule
 {
-    private readonly IUsernameConfigurationRepository repository;
-
-    public MinLengthRule(IUsernameConfigurationRepository repository)
+    public bool Evaluate(Username username, RuleContext context)
     {
-        this.repository = repository;
-    }
-
-    public bool Evaluate(Username username)
-    {
-        UsernameConfiguration? config = repository.GetByName(nameof(MinLengthRule));
-        int minLength = config?.Value as int? ?? 3;
-
-        return username.Value.Length >= minLength;
+        if (context.Parameters is not LengthParameters parameters) return false;
+        
+        return username.Value.Length >= parameters.Length;
     }
 }
 
 public class OnlyAlphanumericCharacters : IUsernameRule
 {
-    public bool Evaluate(Username username)
-    {
-        return username.Value.All(char.IsLetterOrDigit);
-    }
+    public bool Evaluate(Username username, RuleContext context) 
+        => username.Value.All(char.IsLetterOrDigit);
 }
 
 public interface IUsernameConfigurationRepository
@@ -147,9 +141,9 @@ public class InMemoryUsernameConfigurationRepository : IUsernameConfigurationRep
 {
     private List<UsernameConfiguration> UsernameConfigurations = new()
     {
-        new UsernameConfiguration { Key = "MinLengthPolicy", Value = 3 },
-        new UsernameConfiguration { Key = "MaxLengthPolicy", Value = 20 },
-        new UsernameConfiguration { Key = "OnlyAlphanumericCharacters", IsActive = false}
+        new UsernameConfiguration { Key = nameof(MinLengthRule), Parameters = new LengthParameters { Length = 3 } },
+        new UsernameConfiguration { Key = nameof(MaxLengthRule), Parameters = new LengthParameters { Length = 20 } },
+        new UsernameConfiguration { Key = nameof(OnlyAlphanumericCharacters), IsActive = false }
     };
 
     public UsernameConfiguration? GetByName(string policyName)
@@ -159,9 +153,20 @@ public class InMemoryUsernameConfigurationRepository : IUsernameConfigurationRep
         => UsernameConfigurations.AsReadOnly();
 }
 
+
+public interface IRuleParameters
+{
+    
+}
+
+public class LengthParameters : IRuleParameters
+{
+    public int Length { get; set; }
+}
+
 public class UsernameConfiguration
 {
     public required string Key { get; set; }
-    public object? Value { get; set; }
+    public IRuleParameters? Parameters { get; set; }
     public bool IsActive { get; set; } = true;
 }
