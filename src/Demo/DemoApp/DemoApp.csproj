@@ -11,7 +11,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
-      <ProjectReference Include="..\src\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
     </ItemGroup>
 
 
