@@ -19,9 +19,6 @@
       <ProjectReference Include="..\..\GeneralPractices\CompositionOverInheritance\CompositionOverInheritance.csproj" />
       <ProjectReference Include="..\..\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
       <ProjectReference Include="..\..\GeneralPractices\RemovingTraditionalBranching\RemovingTraditionalBranching.csproj" />
-      <ProjectReference Include="..\src\DesignPatterns\FactoryPattern\FactoryPattern.csproj" />
-      <ProjectReference Include="..\src\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
-      <ProjectReference Include="..\src\GeneralPractices\RemovingTraditionalBranching\RemovingTraditionalBranching.csproj" />
     </ItemGroup>
 
 </Project>
