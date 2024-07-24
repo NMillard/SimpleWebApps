@@ -1,0 +1,78 @@
+@page "/hardcoding"
+@rendermode InteractiveServer
+
+@using ExtensionByClasses.Domain
+@using ExtensionByClasses.Domain.Formatters.Hardcoding
+@inject EmployeeFormatter Formatter
+
+<h3>Hard coded</h3>
+
+<label for="name" class="d-block">
+    Name
+    <input id="name" type="text" placeholder="Name" value="@model.Name" @oninput="@(v => model.Name = v.Value?.ToString())">
+</label>
+<br>
+<label for="hiring-date" class="d-block">
+    Hiring date
+    <input id="hiring-date" type="text" placeholder="yyyy-MM-dd" value="@model.HiringDate.ToString("yyyy-MM-dd")" @onchange="OnHiringDateChanged">
+</label>
+<br>
+<label for="format" class="d-block">
+    Format output
+    <select id="format" @onchange="OnFormatOutputSelected">
+        @foreach (string availableFormat in Formatter.GetAvailableFormats())
+        {
+        <option value="@availableFormat">@availableFormat</option>
+        }
+    </select>
+</label>
+<br>
+<button @onclick="FormatEmployee">
+    Format
+</button>
+
+<code class="d-block">
+    <pre>
+        @output
+    </pre>
+</code>
+
+@code {
+
+    private readonly EmployeeModel model = new();
+    private OutputFormat selected = OutputFormat.Json;
+    private string? output;
+
+    public class EmployeeModel
+    {
+        public string? Name { get; set; } = "Faxe Kondi";
+        public DateOnly HiringDate { get; set; } = DateOnly.Parse("2023-05-20");
+    }
+
+    private void OnFormatOutputSelected(ChangeEventArgs changeEventArgs)
+    {
+        var value = changeEventArgs.Value?.ToString();
+        if (value is null) return;
+        
+        selected = Enum.Parse<OutputFormat>(value);
+    }
+
+    private void OnHiringDateChanged(ChangeEventArgs changeEventArgs)
+    {
+        var value = changeEventArgs.Value?.ToString();
+        if (value is null) return;
+        Console.WriteLine(value);
+        
+        model.HiringDate = DateOnly.Parse(value);
+    }
+    
+    private void FormatEmployee()
+    {
+        output = Formatter.Format(new Employee
+        {
+            Name = model.Name,
+            HiringDate = model.HiringDate
+        }, selected);
+    }
+    
+}

@@ -1,0 +1,90 @@
+@page "/extension-by-class"
+@rendermode InteractiveServer
+
+@using ExtensionByClasses.Domain
+@using ExtensionByClasses.Domain.Formatters.Dynamic
+@inject EmployeeFormatterManager EmployeeFormatter
+
+<h3>Extension by class</h3>
+
+<label for="name" class="d-block">
+    Name
+    <input id="name" type="text" placeholder="Name" value="@model.Name" @oninput="@(v => model.Name = v.Value?.ToString())">
+</label>
+<br>
+<label for="hiring-date" class="d-block">
+    Hiring date
+    <input id="hiring-date" type="text" placeholder="yyyy-MM-dd" value="@model.HiringDate.ToString("yyyy-MM-dd")" @onchange="OnHiringDateChanged">
+</label>
+<br>
+<label for="format" class="d-block">
+    Format output
+    <select id="format" @onchange="OnFormatOutputSelected">
+        @foreach (string availableFormat in EmployeeFormatter.GetAvailableFormats())
+        {
+            <option value="@availableFormat">@availableFormat</option>
+        }
+    </select>
+</label>
+<br>
+<button @onclick="FormatEmployee">
+    Format
+</button>
+
+<code class="d-block" style="max-width: 600px; overflow-x: scroll">
+    <pre>
+        @output
+    </pre>
+</code>
+
+@if (selectedOutput.Equals("Pdf") && !string.IsNullOrEmpty(output))
+{
+    <embed src="data:application/pdf;base64,@output" type="application/pdf" width="500" height="800" style="width: 500px; height: 800px;"/>
+}
+
+@code {
+
+    private readonly EmployeeModel model = new();
+    private string selectedOutput = "Json";
+    private string? output;
+
+    protected override void OnInitialized()
+    {
+        selectedOutput = EmployeeFormatter.GetAvailableFormats().FirstOrDefault() ?? "";
+    }
+
+    public class EmployeeModel
+    {
+        public string? Name { get; set; } = "Faxe Kondi";
+        public DateOnly HiringDate { get; set; } = DateOnly.Parse("2023-05-20");
+    }
+
+    private void OnFormatOutputSelected(ChangeEventArgs changeEventArgs)
+    {
+        var value = changeEventArgs.Value?.ToString();
+        if (value is null) return;
+
+        output = string.Empty;
+        selectedOutput = value;
+    }
+
+    private void OnHiringDateChanged(ChangeEventArgs changeEventArgs)
+    {
+        var value = changeEventArgs.Value?.ToString();
+        if (value is null) return;
+
+        model.HiringDate = DateOnly.Parse(value);
+    }
+
+    private void FormatEmployee()
+    {
+        if (selectedOutput is null) return;
+
+        output = EmployeeFormatter.Format(new Employee
+        {
+            Name = model.Name,
+            HiringDate = model.HiringDate
+        }, selectedOutput);
+    }
+
+}
