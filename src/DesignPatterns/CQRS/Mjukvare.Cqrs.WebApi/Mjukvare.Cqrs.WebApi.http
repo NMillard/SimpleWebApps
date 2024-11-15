@@ -1,0 +1,24 @@
+@address = http://localhost:5101
+
+POST {{address}}/users/create
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "nicm"
+}
+
+###
+
+POST {{address}}/users/8609a75d-83fe-4c74-83be-0c8dbaf67a67/checkin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "text": "More good content."
+}
+
+###
+
+GET {{address}}/checkins
+Accept: application/json
