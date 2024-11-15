@@ -64,28 +64,45 @@ app.MapPost("/users/{id:guid}/checkin",
         return Results.Ok();
     }).WithName("AddUserCheckin");
 
-app.MapGet("/checkins", (AppDbContext context) =>
+app.MapGet("/users/{id:guid}/checkins", (AppDbContext context, Guid id) =>
 {
     var result = context.Users
         .Include(u => u.Checkins)
-        .Select(u => new
+        .Select(u => new UserCheckinDisplay
         {
             UserId = u.Id,
             Username = u.Username,
             TotalCheckins = u.Checkins.Count,
             LatestCheckinDate = u.Checkins.OrderByDescending(c => c.Created).Select(c => c.Created).FirstOrDefault(),
-            Checkins = u.Checkins.Select(c => new
+            Checkins = u.Checkins.Select(c => new CheckinDisplay
             {
                 CheckinId = c.Id,
                 Text = c.Text,
                 Created = c.Created
-            })
+            }).ToList()
         })
-        .ToList();
+        .SingleOrDefault(u => u.UserId == id);
     return Results.Ok(result);
 });
 
 app.Run();
+
+public sealed record UserCheckinDisplay
+{
+    public required Guid UserId { get; init; }
+    public required string Username { get; init; }
+    public required int TotalCheckins { get; init; }
+    public required DateTimeOffset LatestCheckinDate { get; init; }
+    public required List<CheckinDisplay> Checkins { get; init; }
+}
+
+public sealed record CheckinDisplay
+{
+    public required Guid CheckinId { get; init; }
+    public required string Text { get; init; }
+    public required DateTimeOffset Created { get; init; }
+}
+
 
 public sealed record CreateUserRequest(string Username);
 
