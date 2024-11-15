@@ -20,5 +20,5 @@ Content-Type: application/json
 
 ###
 
-GET {{address}}/checkins
+GET {{address}}/users/8609a75d-83fe-4c74-83be-0c8dbaf67a67/checkins
 Accept: application/json
