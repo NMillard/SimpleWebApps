@@ -122,6 +122,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messaging", "Messaging", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integrations.RabbitMQ", "src\ExternalIntegrations\Messaging\Integrations.RabbitMQ\Integrations.RabbitMQ.csproj", "{64B34BF8-42EA-4DDD-B0E3-A9CA7C8C5B4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHandling", "src\GeneralPractices\FileHandling\FileHandling.csproj", "{FA0CE203-40B5-45E8-A97A-EDAF52C62104}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CQRS", "CQRS", "{E30A7F7F-C616-4A0B-AB95-F08BA324D790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mjukvare.Cqrs.WebApi", "src\DesignPatterns\CQRS\Mjukvare.Cqrs.WebApi\Mjukvare.Cqrs.WebApi.csproj", "{3DA0EC09-9BA7-455B-9377-2A30BE40E2F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

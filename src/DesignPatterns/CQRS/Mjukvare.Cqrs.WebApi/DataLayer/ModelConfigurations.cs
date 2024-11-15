@@ -35,7 +35,7 @@ public sealed class UserCheckinDisplayConfiguration : IEntityTypeConfiguration<U
             return JsonSerializer.Deserialize<List<CheckinDisplay>>(value, Options) ?? [];
         }
 
-        private static JsonSerializerOptions Options = new()
+        private static readonly JsonSerializerOptions Options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };

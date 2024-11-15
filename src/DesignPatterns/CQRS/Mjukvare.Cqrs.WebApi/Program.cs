@@ -17,10 +17,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString);
 
     options.LogTo(Console.WriteLine, new EventId[RelationalEventId.CommandExecuted.Id]);
+    options.EnableSensitiveDataLogging();
 });
 
 builder.Services
-    .AddHostedService<EventMateralizedViewUpdaterBackgroundService>()
     .AddHostedService<ChannelMaterializedViewUpdaterBackgroundService>();
 
 WebApplication app = builder.Build();

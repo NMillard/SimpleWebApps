@@ -4,22 +4,6 @@ using Mjukvare.Cqrs.WebApi.Domain.ReadModels;
 
 namespace Mjukvare.Cqrs.WebApi.BackgroundServices;
 
-public sealed class EventMateralizedViewUpdaterBackgroundService(
-    ReadUpdateNotifier notifier,
-    ILogger<EventMateralizedViewUpdaterBackgroundService> logger
-) : BackgroundService
-{
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        notifier.CheckinAdded += (sender, args) => { logger.LogInformation("Updating materialized view"); };
-
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-        }
-    }
-}
-
 public sealed class ChannelMaterializedViewUpdaterBackgroundService(
     ILogger<ChannelMaterializedViewUpdaterBackgroundService> logger,
     MaterialViewUserCheckinUpdaterChannel channel,
