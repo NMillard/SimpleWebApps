@@ -42,7 +42,32 @@ namespace Mjukvare.Cqrs.WebApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Checkins");
+                    b.ToTable("Checkins", (string)null);
+                });
+
+            modelBuilder.Entity("Mjukvare.Cqrs.WebApi.Domain.ReadModels.UserCheckinDisplay", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Checkins")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset>("LatestCheckinDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TotalCheckins")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("MaterializedUserCheckins", (string)null);
                 });
 
             modelBuilder.Entity("Mjukvare.Cqrs.WebApi.Domain.User", b =>

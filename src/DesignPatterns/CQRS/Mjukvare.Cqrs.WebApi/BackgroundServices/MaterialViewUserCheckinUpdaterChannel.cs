@@ -21,13 +21,13 @@ public class MaterialViewUserCheckinUpdaterChannel
         channel = Channel.CreateBounded<Guid>(options);
     }
 
-    public async Task<bool> NotifyMaterializedViewUpdate(Guid checkinId, CancellationToken cancellationToken = default)
+    public async Task<bool> NotifyMaterializedViewUpdate(Guid userId, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Notifying materialized view should update");
 
         while (await channel.Writer.WaitToWriteAsync(cancellationToken) && !cancellationToken.IsCancellationRequested)
         {
-            if (!channel.Writer.TryWrite(checkinId)) continue;
+            if (!channel.Writer.TryWrite(userId)) continue;
             
             logger.LogInformation("Notified materialized view update");
             return true;
