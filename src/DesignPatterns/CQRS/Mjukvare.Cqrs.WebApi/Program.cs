@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Mjukvare.Cqrs.WebApi;
+using Mjukvare.Cqrs.WebApi.BackgroundServices;
 using Mjukvare.Cqrs.WebApi.DataLayer;
 using Mjukvare.Cqrs.WebApi.Domain;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<ReadUpdateNotifier>();
+builder.Services.AddSingleton<ReadUpdateNotifier>()
+    .AddSingleton<MaterialViewUserCheckinUpdaterChannel>();
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -16,7 +19,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.LogTo(Console.WriteLine, new EventId[RelationalEventId.CommandExecuted.Id]);
 });
 
-builder.Services.AddHostedService<ReadMateralizedViewUpdater>();
+builder.Services
+    .AddHostedService<EventMateralizedViewUpdaterBackgroundService>()
+    .AddHostedService<ChannelMaterializedViewUpdaterBackgroundService>();
 
 WebApplication app = builder.Build();
 
@@ -40,7 +45,7 @@ app.MapPost("/users/create", async (AppDbContext context, CreateUserRequest requ
     .WithName("CreateUser");
 
 app.MapPost("/users/{id:guid}/checkin",
-    async (AppDbContext context, ReadUpdateNotifier notifier, Guid id, CreateCheckinRequest request) =>
+    async (AppDbContext context, ReadUpdateNotifier notifier, MaterialViewUserCheckinUpdaterChannel channel, Guid id, CreateCheckinRequest request) =>
     {
         User? user = await context.Users
             .Include(u => u.Checkins)
@@ -60,6 +65,7 @@ app.MapPost("/users/{id:guid}/checkin",
         await context.SaveChangesAsync();
 
         notifier.NotifyCheckinAdded();
+        await channel.NotifyMaterializedViewUpdate(checkin.Id);
 
         return Results.Ok();
     }).WithName("AddUserCheckin");
@@ -107,21 +113,6 @@ public sealed record CheckinDisplay
 public sealed record CreateUserRequest(string Username);
 
 public sealed record CreateCheckinRequest(string Text);
-
-public sealed class ReadMateralizedViewUpdater(ReadUpdateNotifier notifier, ILogger<ReadMateralizedViewUpdater> logger)
-    : BackgroundService
-{
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        notifier.CheckinAdded += (sender, args) => { logger.LogInformation("Updating materialized view"); };
-
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-        }
-    }
-}
 
 public sealed class ReadUpdateNotifier
 {
