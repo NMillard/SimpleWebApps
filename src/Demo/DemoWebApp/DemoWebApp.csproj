@@ -5,13 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,9 +19,6 @@
       <ProjectReference Include="..\..\GeneralPractices\CompositionOverInheritance\CompositionOverInheritance.csproj" />
       <ProjectReference Include="..\..\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
       <ProjectReference Include="..\..\GeneralPractices\RemovingTraditionalBranching\RemovingTraditionalBranching.csproj" />
-      <ProjectReference Include="..\src\DesignPatterns\FactoryPattern\FactoryPattern.csproj" />
-      <ProjectReference Include="..\src\GeneralPractices\Configurations\DelegatingConfiguration\DelegatingConfiguration.csproj" />
-      <ProjectReference Include="..\src\GeneralPractices\RemovingTraditionalBranching\RemovingTraditionalBranching.csproj" />
     </ItemGroup>
 
 </Project>
