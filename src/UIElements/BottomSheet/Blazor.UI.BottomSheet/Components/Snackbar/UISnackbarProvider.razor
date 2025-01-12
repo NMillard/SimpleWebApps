@@ -1,0 +1,21 @@
+
+@if (show)
+{
+    <div class="relative z-50">
+        <div class="fixed inset-x-0 bottom-4 flex justify-center"
+             @onmouseenter="OnMouseEnter"
+             @onmouseleave="OnMouseLeave">
+            
+            <div data-mjk-snackbar-content class="flex justify-between items-center gap-3 min-w-48 bg-neutral-700 text-white text-sm
+                        rounded-md px-6 py-4 mx-2">
+                <div>
+                    @message
+                </div>
+                @if (closable)
+                {
+                    <button class="p-2 hover:bg-neutral-600 rounded-full" @onclick="OnCloseClicked">Close</button>
+                }
+            </div>
+        </div>
+    </div>
+}

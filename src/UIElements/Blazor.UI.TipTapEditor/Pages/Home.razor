@@ -1,0 +1,18 @@
+﻿@page "/"
+@using Mjukvare.Blazor.UI.Components.BottomSheet.Services
+@inject BottomSheetService BottomSheetService
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<button type="button" @onclick="OnShowSheetClicked">Show sheet</button>
+
+@code {
+
+    private void OnShowSheetClicked()
+    {
+        BottomSheetService.ShowSheet(@<div>Hello clicky!</div>, BottomSheetHeight.FullHeight);
+    }
+
+}

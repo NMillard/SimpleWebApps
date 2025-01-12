@@ -1,0 +1,92 @@
+﻿@page "/"
+@using Blazor.UI.BottomSheet.Components
+@using Blazor.UI.BottomSheet.Components.BottomSheet.Services
+@using Blazor.UI.BottomSheet.Components.Snackbar
+@inject BottomSheetService BottomSheetService
+@inject SnackbarService SnackbarService
+
+<PageTitle>Home</PageTitle>
+
+<div class="w-full p-10">
+
+    <button type="button" class="px-4 py-2 bg-neutral-800 text-white text-xs font-semibold rounded-lg" @onclick="OnShowSheetClicked">Component with parameters</button>
+    <button type="button" class="px-4 py-2 bg-neutral-800 text-white text-xs font-semibold rounded-lg" @onclick="OnShowSheetClicked2">Inline component</button>
+    <button type="button" class="px-4 py-2 bg-neutral-800 text-white text-xs font-semibold rounded-lg" @onclick="OnHalfHeightClicked">Half height</button>
+    <button type="button" class="px-4 py-2 bg-neutral-800 text-white text-xs font-semibold rounded-lg" @onclick="OnFullHeightClicked">Full height</button>
+    
+    <div class="my-4"></div>
+    
+    <button type="button" class="px-4 py-2 bg-neutral-800 text-white text-xs font-semibold rounded-lg" @onclick="@(() => OnShowSnackbarClicked(true))">Show snackbar</button>
+    <button type="button" class="px-4 py-2 bg-neutral-800 text-white text-xs font-semibold rounded-lg" @onclick="@(() => OnShowSnackbarClicked(false))">Show snackbar (no close) </button>
+
+    <div class="p-10">
+        @foreach (Person person in people)
+        {
+            <p class="p-6 hover:bg-neutral-100 text-sm rounded-md"  @onclick="@(() => OnShowPersonClicked(person))">@person.Name is @person.Age years old</p>
+        }
+    </div>
+</div>
+
+
+
+@code {
+
+    public record Person(string Name, int Age);
+
+    private readonly List<Person> people =
+    [
+        new Person("Nick", 33),
+        new Person("Emma", 27),
+        new Person("Dagmar", 0)
+    ];
+    
+    private void OnShowSheetClicked()
+    {
+        BottomSheetService.ShowSheet<DemoSheetContent>(new DemoContentModel
+        {
+            Name = "Nicko",
+            OnClicked = new EventCallback(this, () =>
+            {
+                Console.WriteLine("hello");
+                BottomSheetService.HideSheet();
+            })
+        }, BottomSheetHeight.QuarterHeight);
+    }
+    
+    private void OnShowSheetClicked2()
+    {
+        BottomSheetService.ShowSheet(@<div @onclick="Hello">more stuff!</div>, BottomSheetHeight.HalfHeight, false);
+    }
+
+    private void Hello()
+    {
+        Console.WriteLine("Hellooo");
+    }
+
+    private void OnShowPersonClicked(Person person)
+    {
+        BottomSheetService.ShowSheet(
+            @<div class="">
+                <h1 class="text-lg">@person.Name</h1>
+                <p class="mb-6">@person.Age</p>
+            </div>, 
+            BottomSheetHeight.QuarterHeight,
+            false);
+    }
+
+    private void OnFullHeightClicked()
+    {
+        BottomSheetService.ShowSheet(@<div>Full height</div>, BottomSheetHeight.FullHeight);
+    }
+
+    private void OnHalfHeightClicked()
+    {
+        BottomSheetService.ShowSheet(@<div>Half height</div>, BottomSheetHeight.HalfHeight);
+    }
+
+    private void OnShowSnackbarClicked(bool closable)
+    {
+        SnackbarService.Show("This is the awesome message", closable);
+    }
+
+}

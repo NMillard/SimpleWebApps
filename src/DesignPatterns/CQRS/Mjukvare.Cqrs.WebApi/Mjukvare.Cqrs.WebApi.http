@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ###
 
-POST {{address}}/users/0f1977f6-ff29-4312-bda8-7f13e6271b07/checkin
+POST {{address}}/users/8609a75d-83fe-4c74-83be-0c8dbaf67a67/checkin
 Accept: application/json
 Content-Type: application/json
 
@@ -20,10 +20,10 @@ Content-Type: application/json
 
 ###
 
-GET {{address}}/users/0f1977f6-ff29-4312-bda8-7f13e6271b07/checkins
+GET {{address}}/users/8609a75d-83fe-4c74-83be-0c8dbaf67a67/checkins
 Accept: application/json
 
 ###
 
-GET {{address}}/users/0f1977f6-ff29-4312-bda8-7f13e6271b07/materialized/checkins
+GET {{address}}/users/8609a75d-83fe-4c74-83be-0c8dbaf67a67/materialized/checkins
 Accept: application/json

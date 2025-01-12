@@ -1,0 +1,29 @@
+<div class="@(show && isModal ? "block" : "hidden") fixed inset-0 bg-neutral-900/10"
+     @onclick="OnScrimClicked"></div>
+
+<div class="relative z-10">
+    <div id="bottom-sheet-container"
+         @ref="element"
+         class="@(show ? "translate-y-0" : "translate-y-full") transition-all shadow-2xl
+                fixed w-full md:w-5/6 xl:w-4/6 mx-auto flex flex-col items-center inset-x-0 bottom-0 delay-0 ease-linear
+                rounded-t-3xl bg-white"
+         style="height: @GetHeightCss(); @(show && dragging ? $"transform: translateY({moveDistance}px); transition-delay: 0ms; transition-timing-function: linear;" : "")"
+         @onmousedown="OnMouseDown"
+         @onmouseleave="OnMouseLeave"
+         @onmousemove="OnMouseMove"
+         @onmouseup="OnMouseUp">
+
+        <div class="w-10/12 flex justify-center p-4 cursor-pointer">
+            <div class="h-1 w-16 bg-neutral-300 rounded-full"></div>
+        </div>
+
+        <div class="flex justify-center items-center p-4 w-full h-full">
+            <div>
+                @if (content is not null)
+                {
+                    @content
+                }
+            </div>
+        </div>
+    </div>
+</div>

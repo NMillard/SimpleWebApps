@@ -1,0 +1,15 @@
+<h3>DemoSheetContent</h3>
+<p>@Model.Name</p>
+
+<button type="button" class="p-4 bg-neutral-500 text-white"
+        @onclick="OnButtonClicked">Click me</button>
+
+@code {
+    [Parameter]
+    public DemoContentModel Model { get; set; } = new();
+
+    private async Task OnButtonClicked()
+    {
+        await Model.OnClicked?.InvokeAsync();
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "blazor.ui.bottomsheet",
+  "author": "",
+  "license": "ISC",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tailwind:watch": "npx tailwindcss -i Styles/dev.css -o wwwroot/css/app.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
